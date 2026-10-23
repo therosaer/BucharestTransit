@@ -1,0 +1,8 @@
+version: 1
+bundleID: com.example.BucharestTransit
+infoPath: Info.plist
+product: BucharestTransit
+iconPath: Sources/BucharestTransit/Resources/AppIcon.png
+extensions:
+  - product: TransitLiveActivityWidget
+    infoPath: TransitLiveActivityWidget-Info.plist

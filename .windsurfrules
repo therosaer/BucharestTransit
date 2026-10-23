@@ -1,0 +1,18 @@
+# Windsurf Rules for BucharestTransit
+
+## Project Context
+- **Name**: BucharestTransit
+- **Platform**: iOS 17+ (Swift 6.4.1, SwiftUI)
+- **Host**: Linux with `xtool` iOS toolchain
+
+## Development Commands
+- Build: `xtool dev build`
+- Deploy to USB phone: `xtool dev run --usb`
+- Always use `xtool`, never raw `swift build`.
+
+## Architecture & Code Guidelines
+- Central state: `AppState.shared` in `Sources/BucharestTransit/Services/AppState.swift`.
+- Map engine: `Sources/BucharestTransit/Views/Map/OpenStreetMapView.swift` with bundled Leaflet.
+- GTFS Timetables: `Resources/line_routes_index.json` with `schedule_wd` / `schedule_we` handled in `Route.swift`.
+- Category grouping: Autobuz & Troleibuz are kept unified.
+- UI styling: Liquid glass materials, Romanian language strings, instant press feedback (`docs/apple_design_guide.md`).

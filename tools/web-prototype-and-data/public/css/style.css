@@ -1,0 +1,1724 @@
+/* ==========================================================================
+   Bucharest Public Transport - Apple Design System
+   Inspired by Apple Maps (iOS / macOS / iPadOS) & WWDC Fluid Interfaces
+   Follows Emil Kowalski's Apple Design Specification:
+   - Materials, Depth & Translucency (backdrop-filter + specular top highlights)
+   - Optical Typography (SF Pro, negative tracking on display, tabular numbers)
+   - Fluid Response (pointer-down scaling 0.96, spring transitions)
+   - Floating Spatial Hierarchy (edge-to-edge vector map with floating chrome)
+   - Full Accessibility (prefers-reduced-motion, prefers-reduced-transparency)
+   ========================================================================== */
+
+:root {
+  /* Apple System Color Palette - Dark Mode Default */
+  --apple-bg: #000000;
+  --apple-canvas: #090a0f;
+  --apple-sheet: rgba(28, 28, 32, 0.78);
+  --apple-sheet-opaque: #1c1c20;
+  --apple-surface: rgba(44, 44, 48, 0.65);
+  --apple-surface-hover: rgba(58, 58, 64, 0.75);
+  --apple-surface-active: rgba(72, 72, 80, 0.85);
+  --apple-input: rgba(35, 35, 40, 0.85);
+  
+  /* Borders & Specular Highlights (light catching the material edge) */
+  --apple-border: rgba(255, 255, 255, 0.12);
+  --apple-border-specular: rgba(255, 255, 255, 0.28);
+  --apple-border-subtle: rgba(255, 255, 255, 0.08);
+
+  /* Typography Colors */
+  --apple-label: #ffffff;
+  --apple-secondary-label: rgba(235, 235, 245, 0.68);
+  --apple-tertiary-label: rgba(235, 235, 245, 0.42);
+  --apple-quaternary-label: rgba(235, 235, 245, 0.22);
+
+  /* Apple System Tint Colors */
+  --apple-blue: #0a84ff;
+  --apple-blue-rgb: 10, 132, 255;
+  --apple-green: #30d158;
+  --apple-green-rgb: 48, 209, 88;
+  --apple-indigo: #5e5ce6;
+  --apple-orange: #ff9f0a;
+  --apple-pink: #ff375f;
+  --apple-purple: #bf5af2;
+  --apple-red: #ff453a;
+  --apple-teal: #64d2ff;
+  --apple-yellow: #ffd60a;
+
+  /* Transport Category Apple Colors */
+  --tram-color: #ff453a;      /* System Red */
+  --trolley-color: #30d158;   /* System Green */
+  --bus-color: #0a84ff;       /* System Blue */
+  --night-color: #bf5af2;     /* System Purple */
+  --regional-color: #64d2ff;  /* System Cyan/Teal */
+  --metro-color: #ffd60a;     /* System Yellow */
+
+  /* Crowding Semantics */
+  --crowd-low: #30d158;
+  --crowd-mod: #ff9f0a;
+  --crowd-high: #ff453a;
+
+  /* Shadows (Context-aware soft Apple shadows) */
+  --apple-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --apple-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.32);
+  --apple-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.45);
+  --apple-shadow-sheet: 0 -4px 32px rgba(0, 0, 0, 0.35);
+
+  /* Springs & Motion Constants */
+  --apple-spring-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --apple-press-duration: 80ms;
+}
+
+/* ==========================================================================
+   Apple Light Mode
+   ========================================================================== */
+body.theme-light {
+  --apple-bg: #f2f2f7;
+  --apple-canvas: #f8f9fa;
+  --apple-sheet: rgba(255, 255, 255, 0.82);
+  --apple-sheet-opaque: #ffffff;
+  --apple-surface: rgba(240, 240, 245, 0.75);
+  --apple-surface-hover: rgba(230, 230, 238, 0.85);
+  --apple-surface-active: rgba(218, 218, 228, 0.95);
+  --apple-input: rgba(245, 245, 247, 0.9);
+
+  --apple-border: rgba(0, 0, 0, 0.08);
+  --apple-border-specular: rgba(255, 255, 255, 0.7);
+  --apple-border-subtle: rgba(0, 0, 0, 0.05);
+
+  --apple-label: #000000;
+  --apple-secondary-label: rgba(60, 60, 67, 0.65);
+  --apple-tertiary-label: rgba(60, 60, 67, 0.4);
+  --apple-quaternary-label: rgba(60, 60, 67, 0.2);
+
+  --apple-blue: #007aff;
+  --apple-blue-rgb: 0, 122, 255;
+  --apple-green: #34c759;
+  --apple-green-rgb: 52, 199, 89;
+  --apple-orange: #ff9500;
+  --apple-red: #ff3b30;
+  --apple-purple: #af52de;
+  --apple-yellow: #ffcc00;
+
+  --tram-color: #ff3b30;
+  --trolley-color: #34c759;
+  --bus-color: #007aff;
+  --night-color: #af52de;
+  --regional-color: #0284c7;
+
+  --apple-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --apple-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --apple-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.14);
+  --apple-shadow-sheet: 0 -4px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   Base & Optical Typography
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+  background-color: var(--apple-canvas);
+  color: var(--apple-label);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", system-ui, -system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optical Typography Tracking Rules */
+h1, .apple-title-1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+h2, .apple-title-2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h3, .apple-title-3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.apple-headline {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+
+.apple-body {
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.apple-caption {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* Tabular Numbers for Timers, Counters & Coordinates */
+.tabular-nums, .countdown-val, .badge, .stat-num, .kpi-val {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   Full Bleed Vector Map (Background Layer)
+   ========================================================================== */
+#map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background: var(--apple-canvas);
+}
+
+/* OpenStreetMap Tiles Theme Styling (Apple Maps Aesthetics, Zero API Key) */
+.leaflet-tile-pane {
+  transition: filter 400ms ease;
+}
+
+/* Apple Maps Dark Vector Filter */
+body:not(.theme-light) .leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(88%) contrast(92%) saturate(80%);
+}
+
+/* Apple Maps Light Mode Crisp Filter */
+body.theme-light .leaflet-tile-pane {
+  filter: saturate(105%) contrast(98%);
+}
+
+/* Clean Custom Leaflet Attribution */
+.leaflet-control-attribution {
+  background: var(--apple-sheet) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  color: var(--apple-tertiary-label) !important;
+  font-size: 10px !important;
+  padding: 2px 8px !important;
+  border-radius: 9999px !important;
+  margin: 6px !important;
+  border: 1px solid var(--apple-border) !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--apple-blue) !important;
+  text-decoration: none !important;
+}
+
+/* Hide default leaflet zoom control for clean Apple aesthetic */
+.leaflet-control-zoom {
+  display: none !important;
+}
+
+/* ==========================================================================
+   1. Response - Fluid Feedback Rule (Instant Press Scaling)
+   ========================================================================== */
+.apple-btn,
+.apple-icon-btn,
+.apple-chip,
+.apple-seg-btn,
+.search-autocomplete-item,
+.line-badge-card,
+.vehicle-item {
+  transition: transform var(--apple-press-duration) var(--apple-spring-ease),
+              background-color 150ms ease,
+              opacity 150ms ease,
+              box-shadow 150ms ease;
+  user-select: none;
+  cursor: pointer;
+}
+
+.apple-btn:active,
+.apple-icon-btn:active,
+.apple-chip:active,
+.apple-seg-btn:active {
+  transform: scale(0.94);
+}
+
+.line-badge-card:active,
+.vehicle-item:active,
+.search-autocomplete-item:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================================================
+   2. Floating Top Search Island (Dynamic Capsule)
+   ========================================================================== */
+.apple-search-island {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1200;
+  width: calc(100% - 32px);
+  max-width: 580px;
+  pointer-events: none; /* children enable pointer-events */
+}
+
+.apple-search-capsule {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 14px 0 16px;
+  background: var(--apple-sheet);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border-radius: 9999px;
+  border: 1px solid var(--apple-border);
+  border-top: 1px solid var(--apple-border-specular);
+  box-shadow: var(--apple-shadow-md);
+  transition: box-shadow 200ms ease, border-color 200ms ease, transform 150ms ease;
+}
+
+.apple-search-capsule:focus-within {
+  border-color: rgba(var(--apple-blue-rgb), 0.5);
+  box-shadow: var(--apple-shadow-lg), 0 0 0 3px rgba(var(--apple-blue-rgb), 0.2);
+}
+
+.apple-search-icon {
+  font-size: 1.05rem;
+  opacity: 0.65;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.apple-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--apple-label);
+  font-family: inherit;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+
+.apple-search-input::placeholder {
+  color: var(--apple-tertiary-label);
+}
+
+.apple-clear-btn {
+  background: rgba(120, 120, 128, 0.25);
+  border: none;
+  color: var(--apple-label);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.apple-clear-btn:hover {
+  opacity: 1;
+}
+
+/* Live Telemetry Status Pill inside Search Island */
+.apple-live-capsule {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(var(--apple-green-rgb), 0.12);
+  border: 1px solid rgba(var(--apple-green-rgb), 0.25);
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--apple-green);
+  flex-shrink: 0;
+}
+
+.apple-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--apple-green);
+  box-shadow: 0 0 6px rgba(var(--apple-green-rgb), 0.7);
+  animation: apple-pulse 2s infinite ease-in-out;
+}
+
+@keyframes apple-pulse {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.apple-countdown {
+  color: var(--apple-label);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+
+/* Real-Time Line Autocomplete Dropdown (Floating Blur Card) */
+.apple-autocomplete-card {
+  pointer-events: auto;
+  margin-top: 8px;
+  background: var(--apple-sheet);
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  border-radius: 20px;
+  border: 1px solid var(--apple-border);
+  border-top: 1px solid var(--apple-border-specular);
+  box-shadow: var(--apple-shadow-lg);
+  max-height: 380px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 6px;
+  animation: apple-spring-enter 240ms var(--apple-spring-ease);
+}
+
+@keyframes apple-spring-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.search-autocomplete-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: 14px;
+  gap: 12px;
+}
+
+.search-autocomplete-item:hover {
+  background: var(--apple-surface);
+}
+
+.search-auto-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.search-auto-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 8px;
+  min-width: 32px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+}
+
+.search-auto-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.search-auto-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--apple-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-auto-endpoints {
+  font-size: 0.72rem;
+  color: var(--apple-secondary-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-auto-veh-count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--apple-blue);
+  background: rgba(var(--apple-blue-rgb), 0.12);
+  padding: 3px 8px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   3. Floating Mode Segmented Picker Pill Bar
+   ========================================================================== */
+.apple-mode-bar {
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+  width: calc(100% - 32px);
+  max-width: 780px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px;
+  border-radius: 9999px;
+  background: var(--apple-sheet);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid var(--apple-border);
+  border-top: 1px solid var(--apple-border-specular);
+  box-shadow: var(--apple-shadow-md);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.apple-mode-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.apple-chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  color: var(--apple-secondary-label);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.apple-chip:hover {
+  color: var(--apple-label);
+  background: var(--apple-surface);
+}
+
+.apple-chip.active {
+  color: #000000;
+  background: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+body.theme-light .apple-chip.active {
+  color: #ffffff;
+  background: #000000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.apple-chip .badge {
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   4. Floating Action Dock (Right Side Tool Stack)
+   ========================================================================== */
+.apple-action-dock {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.apple-dock-island {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+  background: var(--apple-sheet);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border-radius: 9999px;
+  border: 1px solid var(--apple-border);
+  border-top: 1px solid var(--apple-border-specular);
+  box-shadow: var(--apple-shadow-md);
+}
+
+.apple-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--apple-label);
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 150ms ease, transform var(--apple-press-duration) var(--apple-spring-ease);
+}
+
+.apple-icon-btn:hover {
+  background: var(--apple-surface);
+}
+
+.apple-icon-btn.active {
+  background: var(--apple-blue);
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(var(--apple-blue-rgb), 0.4);
+}
+
+.apple-icon-btn.spinning {
+  animation: apple-spin 0.6s var(--apple-spring-ease);
+}
+
+@keyframes apple-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   5. Apple Floating Bottom Sheet (Line Explorer & Inspector HUD)
+   ========================================================================== */
+.apple-sheet {
+  position: fixed;
+  z-index: 1250;
+  background: var(--apple-sheet);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid var(--apple-border);
+  border-top: 1px solid var(--apple-border-specular);
+  box-shadow: var(--apple-shadow-lg);
+  border-radius: 26px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: apple-sheet-appear 320ms var(--apple-spring-ease);
+  will-change: transform, opacity;
+}
+
+@keyframes apple-sheet-appear {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Desktop Placement: Floating Card on Bottom-Left */
+@media (min-width: 769px) {
+  .line-explorer-sheet {
+    bottom: 24px;
+    left: 24px;
+    width: 440px;
+    max-height: calc(100vh - 160px);
+  }
+
+  .apple-placecard {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 380px;
+    z-index: 1250;
+    border-radius: 24px;
+  }
+}
+
+/* Mobile Placement: Edge-Docked Bottom Sheet with Drag Handle */
+@media (max-width: 768px) {
+  .line-explorer-sheet,
+  .apple-placecard {
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-height: calc(85vh - 56px) !important;
+    border-radius: 26px 26px 0 0 !important;
+    border-bottom: none !important;
+    box-shadow: var(--apple-shadow-sheet) !important;
+  }
+
+  .apple-action-dock {
+    top: auto;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+    right: 14px;
+    z-index: 1200;
+  }
+
+  .desktop-only-dock {
+    display: none !important;
+  }
+
+  .apple-modal-scrim {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+
+  .apple-modal-dialog {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 28px 28px 0 0 !important;
+    border-bottom: none !important;
+    max-height: calc(88vh - env(safe-area-inset-top, 0px)) !important;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    animation: ios-sheet-slide-up 320ms cubic-bezier(0.32, 0.72, 0, 1) !important;
+  }
+
+  .apple-search-capsule {
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
+}
+
+@keyframes ios-sheet-slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.sheet-grabber {
+  width: 36px;
+  height: 5px;
+  background: rgba(120, 120, 128, 0.4);
+  border-radius: 9999px;
+  margin: 10px auto 4px auto;
+  flex-shrink: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sheet-grabber:active {
+  cursor: grabbing;
+}
+
+.sheet-header {
+  padding: 12px 18px 8px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.sheet-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.sheet-badge {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 12px;
+  min-width: 44px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.sheet-titles {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sheet-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--apple-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sheet-subtitle {
+  font-size: 0.78rem;
+  color: var(--apple-secondary-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sheet-close-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(120, 120, 128, 0.2);
+  color: var(--apple-label);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.sheet-close-btn:hover {
+  background: rgba(120, 120, 128, 0.35);
+}
+
+.sheet-body {
+  padding: 12px 18px 18px 18px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ==========================================================================
+   Apple Segmented Controls (iOS Native Look & Feel)
+   ========================================================================== */
+.apple-segmented-control {
+  display: flex;
+  background: var(--apple-surface);
+  padding: 3px;
+  border-radius: 12px;
+  gap: 2px;
+  border: 1px solid var(--apple-border-subtle);
+}
+
+.apple-seg-btn {
+  flex: 1;
+  padding: 7px 8px;
+  border: none;
+  background: transparent;
+  color: var(--apple-secondary-label);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border-radius: 9px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.apple-seg-btn:hover {
+  color: var(--apple-label);
+}
+
+.apple-seg-btn.active {
+  background: var(--apple-sheet-opaque);
+  color: var(--apple-label);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+body.theme-light .apple-seg-btn.active {
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Sub-row Controls (Stations toggle & Fleet stat pill) */
+.sheet-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 2px 0;
+}
+
+.apple-switch-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--apple-secondary-label);
+  cursor: pointer;
+  user-select: none;
+}
+
+.apple-switch-label input[type="checkbox"] {
+  appearance: none;
+  width: 36px;
+  height: 20px;
+  background: rgba(120, 120, 128, 0.35);
+  border-radius: 9999px;
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 200ms ease;
+}
+
+.apple-switch-label input[type="checkbox"]::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 200ms var(--apple-spring-ease);
+}
+
+.apple-switch-label input[type="checkbox"]:checked {
+  background-color: var(--apple-green);
+}
+
+.apple-switch-label input[type="checkbox"]:checked::after {
+  transform: translateX(16px);
+}
+
+.fleet-stat-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--apple-blue);
+  background: rgba(var(--apple-blue-rgb), 0.12);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Line Explorer Interactive Stations Strip & Timeline
+   ========================================================================== */
+.stations-strip-header {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--apple-tertiary-label);
+  margin-top: 4px;
+}
+
+.stations-scroll-container {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 8px 2px;
+  scrollbar-width: thin;
+}
+
+.stations-scroll-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.stations-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 128, 0.3);
+  border-radius: 9999px;
+}
+
+.station-pill-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--apple-surface);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--apple-label);
+  border: 1px solid var(--apple-border-subtle);
+  cursor: pointer;
+  transition: transform 80ms var(--apple-spring-ease), background 150ms ease;
+}
+
+.station-pill-item:hover {
+  background: var(--apple-surface-hover);
+}
+
+.station-pill-item:active {
+  transform: scale(0.95);
+}
+
+.station-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--apple-blue);
+}
+
+/* ==========================================================================
+   Vehicle Inspector HUD (Apple Placecard)
+   ========================================================================== */
+.apple-placecard {
+  background: var(--apple-sheet);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid var(--apple-border);
+  border-top: 1px solid var(--apple-border-specular);
+  box-shadow: var(--apple-shadow-lg);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  animation: apple-sheet-appear 320ms var(--apple-spring-ease);
+}
+
+.apple-placecard.visible {
+  display: flex;
+}
+
+.insp-telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  background: var(--apple-surface);
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--apple-border-subtle);
+}
+
+.insp-item-label {
+  font-size: 0.72rem;
+  color: var(--apple-tertiary-label);
+  font-weight: 500;
+}
+
+.insp-item-val {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--apple-label);
+  margin-top: 1px;
+}
+
+/* Apple Activity-style Crowding Progress Meter */
+.occupancy-meter-card {
+  background: var(--apple-surface);
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--apple-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meter-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.meter-header-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--apple-label);
+}
+
+.meter-header-sub {
+  font-size: 0.72rem;
+  color: var(--apple-tertiary-label);
+}
+
+.meter-bar-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(120, 120, 128, 0.25);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.meter-bar-fill {
+  height: 100%;
+  background: var(--apple-green);
+  border-radius: 9999px;
+  transition: width 400ms var(--apple-spring-ease), background-color 300ms ease;
+}
+
+.meter-flow-caption {
+  font-size: 0.72rem;
+  color: var(--apple-secondary-label);
+}
+
+/* Action Buttons (Primary / Secondary Apple Pills) */
+.placecard-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.apple-btn-primary {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: none;
+  background: var(--apple-blue);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(var(--apple-blue-rgb), 0.35);
+}
+
+.apple-btn-secondary {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--apple-border);
+  background: var(--apple-surface);
+  color: var(--apple-label);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.apple-btn-secondary:hover {
+  background: var(--apple-surface-hover);
+}
+
+/* ==========================================================================
+   6. Apple Modals & Dialogs (Layers, Lines, Transit Pulse, Info)
+   ========================================================================== */
+.apple-modal-scrim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1500;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.apple-modal-scrim.active {
+  display: flex;
+  opacity: 1;
+}
+
+.apple-modal-dialog {
+  background: var(--apple-sheet);
+  backdrop-filter: blur(36px) saturate(200%);
+  -webkit-backdrop-filter: blur(36px) saturate(200%);
+  border: 1px solid var(--apple-border);
+  border-top: 1px solid var(--apple-border-specular);
+  box-shadow: var(--apple-shadow-lg);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: apple-dialog-zoom 260ms var(--apple-spring-ease);
+}
+
+@keyframes apple-dialog-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.apple-dialog-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--apple-border-subtle);
+}
+
+.apple-dialog-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--apple-label);
+}
+
+.apple-dialog-body {
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--apple-secondary-label);
+}
+
+.apple-dialog-body h4 {
+  color: var(--apple-label);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.apple-dialog-body ul {
+  padding-left: 20px;
+}
+
+.apple-dialog-body li {
+  margin-bottom: 4px;
+}
+
+.apple-dialog-body code {
+  background: var(--apple-surface);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: var(--apple-blue);
+}
+
+/* Layer Toggle Row (Apple iOS Settings Row style) */
+.layer-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--apple-surface);
+  border-radius: 14px;
+  border: 1px solid var(--apple-border-subtle);
+}
+
+.layer-info-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.layer-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.layer-name-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--apple-label);
+}
+
+/* Lines Grid in Modal */
+.lines-grid-modal {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 8px;
+}
+
+.line-badge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 6px;
+  background: var(--apple-surface);
+  border-radius: 14px;
+  border: 1px solid var(--apple-border-subtle);
+  text-align: center;
+}
+
+.line-badge-card:hover {
+  background: var(--apple-surface-hover);
+}
+
+.line-badge-card.active {
+  border-color: var(--apple-blue);
+  background: rgba(var(--apple-blue-rgb), 0.15);
+}
+
+.line-num {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 8px;
+  min-width: 36px;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.line-type-label {
+  font-size: 0.7rem;
+  color: var(--apple-secondary-label);
+  white-space: nowrap;
+}
+
+.line-veh-count {
+  font-size: 0.65rem;
+  color: var(--apple-blue);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* Transit Pulse Analytics Cards */
+.kpi-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.kpi-box {
+  background: var(--apple-surface);
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--apple-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kpi-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--apple-tertiary-label);
+}
+
+.kpi-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--apple-label);
+}
+
+.kpi-subtitle {
+  font-size: 0.7rem;
+  color: var(--apple-secondary-label);
+}
+
+/* ==========================================================================
+   7. Leaflet Vehicle Markers (Apple Squircle Pins)
+   ========================================================================== */
+.custom-vehicle-div-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.apple-vehicle-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: -0.02em;
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 180ms var(--apple-spring-ease), box-shadow 180ms ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.apple-vehicle-marker:hover {
+  transform: scale(1.18);
+  z-index: 1000 !important;
+}
+
+.apple-vehicle-marker.selected {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9), 0 8px 20px rgba(0, 0, 0, 0.6);
+  z-index: 2000 !important;
+}
+
+.apple-vehicle-marker.halo-crowded {
+  box-shadow: 0 0 0 4px rgba(255, 69, 58, 0.6), 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.apple-vehicle-marker.halo-moderate {
+  box-shadow: 0 0 0 3px rgba(255, 159, 10, 0.5), 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.apple-vehicle-marker.off-route {
+  opacity: 0.75;
+  filter: grayscale(40%);
+  border-style: dashed;
+}
+
+.apple-vehicle-marker.stale-gps {
+  opacity: 0.5;
+}
+
+/* ==========================================================================
+   8. Reduced Motion & Accessibility (@media rules from Apple Guide)
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .apple-sheet,
+  .apple-modal-dialog,
+  .apple-autocomplete-card {
+    animation: none !important;
+    transform: none !important;
+    transition: opacity 150ms ease !important;
+  }
+
+  .apple-btn:active,
+  .apple-icon-btn:active,
+  .apple-chip:active,
+  .apple-seg-btn:active {
+    transform: none !important;
+    opacity: 0.7 !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --apple-sheet: #1c1c20;
+    --apple-surface: #2c2c30;
+    --apple-input: #242428;
+  }
+
+  body.theme-light {
+    --apple-sheet: #ffffff;
+    --apple-surface: #f0f0f5;
+    --apple-input: #e8e8ed;
+  }
+
+  .apple-sheet,
+  .apple-search-capsule,
+  .apple-mode-bar,
+  .apple-dock-island,
+  .apple-autocomplete-card,
+  .apple-modal-dialog {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --apple-border: rgba(255, 255, 255, 0.35);
+    --apple-border-specular: rgba(255, 255, 255, 0.8);
+  }
+
+  body.theme-light {
+    --apple-border: rgba(0, 0, 0, 0.35);
+    --apple-border-specular: rgba(0, 0, 0, 0.8);
+  }
+
+  .apple-search-capsule,
+  .apple-sheet,
+  .apple-modal-dialog,
+  .apple-chip {
+    border-width: 2px !important;
+  }
+}
+
+/* ==========================================================================
+   9. Leaflet Apple Glass Popups
+   ========================================================================== */
+.leaflet-popup-content-wrapper {
+  background: var(--apple-sheet) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  border: 1px solid var(--apple-border) !important;
+  border-top: 1px solid var(--apple-border-specular) !important;
+  border-radius: 18px !important;
+  box-shadow: var(--apple-shadow-lg) !important;
+  color: var(--apple-label) !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: inherit !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--apple-sheet) !important;
+  backdrop-filter: blur(28px) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  border: 1px solid var(--apple-border) !important;
+}
+
+.leaflet-popup-close-button {
+  color: var(--apple-secondary-label) !important;
+  top: 8px !important;
+  right: 8px !important;
+  padding: 4px !important;
+  font-size: 16px !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: var(--apple-label) !important;
+}
+
+/* ==========================================================================
+   10. Bilet TB Active Tickets & Inspection QR Code (Apple Design)
+   ========================================================================== */
+.ticket-active-card {
+  background: var(--apple-surface);
+  border: 1px solid var(--apple-border);
+  border-top: 4px solid var(--apple-green);
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: var(--apple-shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ticket-elev-card {
+  border-top: 4px solid var(--apple-green);
+  box-shadow: 0 4px 20px rgba(52, 199, 89, 0.15), var(--apple-shadow-md);
+}
+
+.ticket-countdown-banner {
+  background: rgba(var(--apple-green-rgb), 0.12);
+  border: 1px solid rgba(var(--apple-green-rgb), 0.3);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ticket-countdown-banner.warning {
+  background: rgba(255, 69, 58, 0.15);
+  border-color: rgba(255, 69, 58, 0.4);
+}
+
+.ticket-countdown-time {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--apple-green);
+  font-variant-numeric: tabular-nums;
+}
+
+.ticket-countdown-banner.warning .ticket-countdown-time {
+  color: var(--apple-red);
+}
+
+.ticket-qr-frame {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 4px auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.ticket-qr-frame img,
+.ticket-qr-frame canvas,
+.ticket-qr-frame svg {
+  display: block;
+  max-width: 190px;
+  max-height: 190px;
+}
+
+.ticket-series-badge {
+  background: var(--apple-sheet);
+  border: 1px solid var(--apple-border);
+  border-radius: 10px;
+  padding: 4px 10px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--apple-label);
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.wallet-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--apple-surface);
+  border-radius: 16px;
+  border: 1px solid var(--apple-border-subtle);
+  gap: 10px;
+}
+
+.wallet-item-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.wallet-item-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--apple-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wallet-item-sub {
+  font-size: 0.72rem;
+  color: var(--apple-secondary-label);
+}
+
+/* ==========================================================================
+   11. iOS Native Bottom Tab Bar (Apple Human Interface Guidelines)
+   ========================================================================== */
+.ios-tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1300;
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--apple-sheet);
+  backdrop-filter: blur(36px) saturate(210%);
+  -webkit-backdrop-filter: blur(36px) saturate(210%);
+  border-top: 0.5px solid var(--apple-border-specular);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@media (min-width: 769px) {
+  /* On Desktop, render as a sleek floating Apple glass capsule centered at bottom */
+  .ios-tab-bar {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    bottom: 20px;
+    height: 52px;
+    padding-bottom: 0;
+    width: 460px;
+    border-radius: 26px;
+    border: 1px solid var(--apple-border);
+    border-top: 1px solid var(--apple-border-specular);
+    box-shadow: var(--apple-shadow-lg);
+  }
+}
+
+.ios-tab-btn {
+  flex: 1;
+  height: 100%;
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--apple-secondary-label);
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 150ms ease, transform 120ms var(--apple-spring-ease);
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+
+.ios-tab-btn:active {
+  transform: scale(0.92);
+}
+
+.ios-tab-btn.active {
+  color: var(--apple-blue);
+}
+
+.ios-tab-icon-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ios-tab-icon {
+  width: 22px;
+  height: 22px;
+  transition: transform 180ms var(--apple-spring-ease);
+}
+
+.ios-tab-btn.active .ios-tab-icon {
+  transform: scale(1.08);
+  stroke-width: 2.3;
+}
+
+.ios-tab-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.ios-tab-badge {
+  position: absolute;
+  top: -4px;
+  right: -9px;
+  background: var(--apple-green);
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 800;
+  min-width: 16px;
+  height: 16px;
+  line-height: 16px;
+  border-radius: 9999px;
+  padding: 0 4px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(52, 199, 89, 0.4);
+}
+

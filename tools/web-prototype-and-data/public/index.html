@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>București Live Transit • Apple Design Edition</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- App Stylesheet (Apple Design System) -->
+  <link rel="stylesheet" href="css/style.css?v=20261018_ios_tabbar_v4">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚍</text></svg>">
+</head>
+<body>
+
+  <!-- ================= Full Bleed Vector Map ================= -->
+  <div id="map"></div>
+
+  <!-- ================= 1. Floating Top Search Island ================= -->
+  <div class="apple-search-island">
+    <div class="apple-search-capsule">
+      <span class="apple-search-icon">🔍</span>
+      <input type="text" id="search-input" class="apple-search-input" placeholder="Caută linie (41, 104, 381) sau vehicul..." autocomplete="off" spellcheck="false">
+      <button id="clear-search-btn" class="apple-clear-btn" title="Șterge" style="display: none;">✕</button>
+      
+      <!-- Quick Active Ticket Pill -->
+      <div id="quick-ticket-pill" class="apple-live-capsule" style="background: rgba(48, 209, 88, 0.15); border-color: rgba(48, 209, 88, 0.35); cursor: pointer;" title="Deschide Biletul Activ">
+        <span>🎟️</span>
+        <span id="quick-ticket-countdown" class="apple-countdown" style="color: var(--apple-green); font-weight: 700;">Bilet Activ</span>
+      </div>
+
+      <!-- Live Sync Telemetry Capsule -->
+      <div class="apple-live-capsule" title="Smart Poller sincronizat la fiecare 12s conform rate-limit upstream">
+        <span class="apple-live-dot"></span>
+        <span class="apple-live-text">LIVE</span>
+        <span id="sync-countdown" class="apple-countdown">12s</span>
+      </div>
+    </div>
+
+    <!-- Real-time Line Autocomplete Dropdown Card -->
+    <div id="search-autocomplete-list" class="apple-autocomplete-card" style="display: none;"></div>
+  </div>
+
+  <!-- ================= 2. Floating Mode Segmented Picker ================= -->
+  <nav class="apple-mode-bar">
+    <button class="apple-chip chip-btn active" data-mode="all">
+      Toate <span class="badge" id="chip-count-all">...</span>
+    </button>
+    <button class="apple-chip chip-btn" data-mode="tram">
+      🚋 Tramvaie
+    </button>
+    <button class="apple-chip chip-btn" data-mode="trolleybus">
+      🚎 Troleibuze
+    </button>
+    <button class="apple-chip chip-btn" data-mode="bus">
+      🚍 Autobuze
+    </button>
+    <button class="apple-chip chip-btn" data-mode="night_bus">
+      🌙 Noapte
+    </button>
+    <button class="apple-chip chip-btn" data-mode="regional_bus">
+      🚌 Regio Ilfov
+    </button>
+    <button class="apple-chip chip-btn" data-mode="crowded">
+      🔥 Aglomerate
+    </button>
+    <button class="apple-chip chip-btn" data-mode="active_gps" title="Ascunde vehiculele parcate sau cu semnal GPS vechi">
+      ⚡ GPS Activ
+    </button>
+    <button class="apple-chip" id="chip-tickets-btn" style="color: var(--apple-green); font-weight: 600; border: 1px solid rgba(48, 209, 88, 0.3);">
+      🎟️ Titluri Bilet TB
+    </button>
+  </nav>
+
+  <!-- ================= 3. Floating Action Dock (Right Stack) ================= -->
+  <aside class="apple-action-dock">
+    <div class="apple-dock-island">
+      <button id="locate-btn" class="apple-icon-btn" title="Locația Mea (GPS)">📍</button>
+      <button id="refresh-btn" class="apple-icon-btn" title="Reîmprospătează datele live">🔄</button>
+      <button id="theme-toggle-btn" class="apple-icon-btn" title="Schimbă tema (Întunecat / Luminos)">🌓</button>
+    </div>
+    
+    <div class="apple-dock-island desktop-only-dock">
+      <button id="open-tickets-btn" class="apple-icon-btn" title="Bilet TB • Titluri Active & QR Control" style="color: var(--apple-green);">🎟️</button>
+      <button id="open-lines-btn" class="apple-icon-btn" title="Toate Liniile (Director)">📋</button>
+      <button id="open-layers-btn" class="apple-icon-btn" title="Straturi Hartă">🗺️</button>
+      <button id="open-stats-btn" class="apple-icon-btn" title="Statistici Flotă & Pasageri">📊</button>
+      <button id="info-modal-btn" class="apple-icon-btn" title="Despre Aplicație & Open Data">ℹ️</button>
+    </div>
+  </aside>
+
+  <!-- ================= 4. Floating Line Explorer Bottom Sheet ================= -->
+  <div id="line-explorer-card" class="apple-sheet line-explorer-sheet" style="display: none;">
+    <div class="sheet-grabber"></div>
+    <div class="sheet-header">
+      <div class="sheet-header-left">
+        <div id="line-explorer-badge" class="sheet-badge">41</div>
+        <div class="sheet-titles">
+          <div id="line-explorer-title" class="sheet-title">Linia 41 • Tramvai</div>
+          <div id="line-explorer-endpoints" class="sheet-subtitle">Tur: → Ghencea | Retur: → Piața Presei</div>
+        </div>
+      </div>
+      <button id="close-line-explorer-btn" class="sheet-close-btn" title="Închide traseul liniei">✕</button>
+    </div>
+
+    <div class="sheet-body">
+      <!-- Direction Segmented Picker (Ambele / Tur / Retur) -->
+      <div class="apple-segmented-control">
+        <button id="dir-btn-both" class="apple-seg-btn dir-btn active" data-dir="both" title="Afișează ambele sensuri (Tur și Retur)">
+          ✨ Ambele sensuri
+        </button>
+        <button id="dir-btn-tur" class="apple-seg-btn dir-btn" data-dir="tur" title="Afișează doar sensul Tur">
+          🔵 Tur (Dus)
+        </button>
+        <button id="dir-btn-retur" class="apple-seg-btn dir-btn" data-dir="retur" title="Afișează doar sensul Retur">
+          🟢 Retur (Întors)
+        </button>
+      </div>
+
+      <!-- On-Route vs All-Assigned Segmented Control -->
+      <div class="apple-segmented-control">
+        <button id="filter-on-route-btn" class="apple-seg-btn line-status-btn active" data-filter="on_route" title="Afișează doar vehiculele aflate efectiv pe traseul liniei (în circulație)">
+          🎯 În traseu (<span id="count-on-route">0</span>)
+        </button>
+        <button id="filter-all-assigned-btn" class="apple-seg-btn line-status-btn" data-filter="all" title="Include și vehiculele aflate în garaje / depouri / retrase">
+          🏢 Toate alocate (<span id="count-all-assigned">0</span>)
+        </button>
+      </div>
+
+      <!-- Sub-row: Stations Toggle & Fleet Summary Badge -->
+      <div class="sheet-meta-row">
+        <label class="apple-switch-label" title="Afișează sau ascunde stațiile pe hartă">
+          <input type="checkbox" id="toggle-line-stations-cb" checked>
+          <span>📍 Stații pe traseu</span>
+        </label>
+        <div id="line-explorer-veh-stat" class="fleet-stat-badge">
+          Calculare vehicule active...
+        </div>
+      </div>
+
+      <!-- Interactive Stations Timeline Strip -->
+      <div class="stations-strip-header">Stații Traseu (Apasă pentru centrare pe hartă)</div>
+      <div id="line-stations-container" class="stations-scroll-container">
+        <span style="font-size: 0.75rem; color: var(--apple-secondary-label); padding: 4px;">Se încarcă secvența stațiilor...</span>
+      </div>
+
+      <!-- Active Line Vehicles Carousel -->
+      <div class="stations-strip-header">Vehicule în Serviciu pe Linie</div>
+      <div id="line-vehicles-container" class="stations-scroll-container">
+        <span style="font-size: 0.75rem; color: var(--apple-secondary-label); padding: 4px;">Se identifică flota activă...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 5. Vehicle Inspector HUD (Apple Placecard) ================= -->
+  <div id="vehicle-inspector-card" class="apple-sheet apple-placecard">
+    <div class="sheet-grabber"></div>
+    <div class="sheet-header">
+      <div class="sheet-header-left">
+        <div id="insp-line-badge" class="sheet-badge" style="background: var(--apple-blue);">41</div>
+        <div class="sheet-titles">
+          <div id="insp-mode-title" class="sheet-title">Tramvai (B02849)</div>
+          <div id="insp-direction" class="sheet-subtitle">Tur (Dus)</div>
+        </div>
+      </div>
+      <button id="close-insp-btn" class="sheet-close-btn">✕</button>
+    </div>
+
+    <div class="sheet-body">
+      <!-- Telemetry Grid -->
+      <div class="insp-telemetry-grid">
+        <div>
+          <div class="insp-item-label">Nr. Înmatriculare</div>
+          <div id="insp-plate" class="insp-item-val tabular-nums">B-163-STB</div>
+        </div>
+        <div>
+          <div class="insp-item-label">Plecare din capăt</div>
+          <div id="insp-start-time" class="insp-item-val tabular-nums">12:35</div>
+        </div>
+        <div>
+          <div class="insp-item-label">Pasageri la bord</div>
+          <div id="insp-psg-count" class="insp-item-val tabular-nums" style="color: var(--apple-blue);">24 pasageri</div>
+        </div>
+        <div>
+          <div class="insp-item-label">Sursă telemetrie</div>
+          <div id="insp-source" class="insp-item-val">Radcom AVL</div>
+        </div>
+      </div>
+
+      <!-- Occupancy Meter (Activity Style Progress Bar) -->
+      <div class="occupancy-meter-card">
+        <div class="meter-header-row">
+          <span id="insp-crowd-label" class="meter-header-label">Moderat</span>
+          <span class="meter-header-sub">Grad Ocupare APC</span>
+        </div>
+        <div class="meter-bar-track">
+          <div id="insp-progress-fill" class="meter-bar-fill" style="width: 45%;"></div>
+        </div>
+        <div id="insp-flow-text" class="meter-flow-caption">
+          +5 urcați / -2 coborâți la ultima stație
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="placecard-actions">
+        <button id="follow-veh-btn" class="apple-btn-primary">🎯 Urmărește</button>
+        <button id="show-route-btn" class="apple-btn-secondary">🗺️ Traseu linie</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 6. Apple Modals & Dialogs ================= -->
+
+  <!-- Modal A: All Lines Directory Modal -->
+  <div id="lines-modal" class="apple-modal-scrim">
+    <div class="apple-modal-dialog">
+      <div class="sheet-grabber"></div>
+      <div class="apple-dialog-header">
+        <div class="apple-dialog-title">📋 Linii de Transport Public</div>
+        <button id="close-lines-modal-btn" class="sheet-close-btn">✕</button>
+      </div>
+      <div class="apple-dialog-body">
+        <p style="font-size: 0.8rem; color: var(--apple-secondary-label);">Selectează o linie pentru a izola vehiculele și a afișa traseul complet (Tur și Retur):</p>
+        <div id="routes-list-container" class="lines-grid-modal">
+          <div style="color: var(--apple-secondary-label); padding: 1rem;">Se încarcă liniile...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal B: Map Layers Sheet -->
+  <div id="layers-modal" class="apple-modal-scrim">
+    <div class="apple-modal-dialog">
+      <div class="sheet-grabber"></div>
+      <div class="apple-dialog-header">
+        <div class="apple-dialog-title">🗺️ Straturi de Infrastructură</div>
+        <button id="close-layers-modal-btn" class="sheet-close-btn">✕</button>
+      </div>
+      <div class="apple-dialog-body">
+        <p style="font-size: 0.8rem; color: var(--apple-secondary-label);">Activează straturile de rețea și infrastructură pe harta Bucureștiului:</p>
+        
+        <div class="layer-row-item">
+          <div class="layer-info-left">
+            <span class="layer-dot" style="background: var(--tram-color);"></span>
+            <span class="layer-name-title">Rețea Linii Tramvai</span>
+          </div>
+          <label class="apple-switch-label">
+            <input type="checkbox" class="layer-checkbox" data-layer="tram_network" data-color="#ff453a" data-weight="4">
+          </label>
+        </div>
+
+        <div class="layer-row-item">
+          <div class="layer-info-left">
+            <span class="layer-dot" style="background: var(--trolley-color);"></span>
+            <span class="layer-name-title">Rețea Troleibuze</span>
+          </div>
+          <label class="apple-switch-label">
+            <input type="checkbox" class="layer-checkbox" data-layer="trolley_network" data-color="#30d158" data-weight="4">
+          </label>
+        </div>
+
+        <div class="layer-row-item">
+          <div class="layer-info-left">
+            <span class="layer-dot" style="background: var(--metro-color);"></span>
+            <span class="layer-name-title">Rețea Metrou (M1-M5)</span>
+          </div>
+          <label class="apple-switch-label">
+            <input type="checkbox" class="layer-checkbox" data-layer="metro_network" data-color="#ffd60a" data-weight="5">
+          </label>
+        </div>
+
+        <div class="layer-row-item">
+          <div class="layer-info-left">
+            <span class="layer-dot" style="background: var(--metro-color);"></span>
+            <span class="layer-name-title">Stații Metrou</span>
+          </div>
+          <label class="apple-switch-label">
+            <input type="checkbox" class="layer-checkbox" data-layer="metro_stations" data-color="#ffd60a">
+          </label>
+        </div>
+
+        <div class="layer-row-item">
+          <div class="layer-info-left">
+            <span class="layer-dot" style="background: #64d2ff;"></span>
+            <span class="layer-name-title">Benzi Dedicate STB</span>
+          </div>
+          <label class="apple-switch-label">
+            <input type="checkbox" class="layer-checkbox" data-layer="bus_lanes" data-color="#64d2ff" data-weight="4">
+          </label>
+        </div>
+
+        <div class="layer-row-item">
+          <div class="layer-info-left">
+            <span class="layer-dot" style="background: var(--night-color);"></span>
+            <span class="layer-name-title">Rețea Autobuze Noapte</span>
+          </div>
+          <label class="apple-switch-label">
+            <input type="checkbox" class="layer-checkbox" data-layer="night_network" data-color="#bf5af2" data-weight="3">
+          </label>
+        </div>
+
+        <div class="layer-row-item">
+          <div class="layer-info-left">
+            <span class="layer-dot" style="background: #30d158;"></span>
+            <span class="layer-name-title">Rețea Autobuze Electrice</span>
+          </div>
+          <label class="apple-switch-label">
+            <input type="checkbox" class="layer-checkbox" data-layer="electric_bus" data-color="#30d158" data-weight="3">
+          </label>
+        </div>
+
+        <div class="layer-row-item">
+          <div class="layer-info-left">
+            <span class="layer-dot" style="background: #ff9f0a;"></span>
+            <span class="layer-name-title">Depouri Tramvai</span>
+          </div>
+          <label class="apple-switch-label">
+            <input type="checkbox" class="layer-checkbox" data-layer="depots" data-color="#ff9f0a">
+          </label>
+        </div>
+
+        <div class="layer-row-item">
+          <div class="layer-info-left">
+            <span class="layer-dot" style="background: var(--bus-color);"></span>
+            <span class="layer-name-title">Autobaze STB</span>
+          </div>
+          <label class="apple-switch-label">
+            <input type="checkbox" class="layer-checkbox" data-layer="autobaze" data-color="#0a84ff">
+          </label>
+        </div>
+
+        <div class="layer-row-item">
+          <div class="layer-info-left">
+            <span class="layer-dot" style="background: #30b0c7;"></span>
+            <span class="layer-name-title">Terminale Park & Ride</span>
+          </div>
+          <label class="apple-switch-label">
+            <input type="checkbox" class="layer-checkbox" data-layer="park_ride" data-color="#30b0c7">
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal C: Transit Pulse & Analytics Sheet -->
+  <div id="stats-modal" class="apple-modal-scrim">
+    <div class="apple-modal-dialog">
+      <div class="sheet-grabber"></div>
+      <div class="apple-dialog-header">
+        <div class="apple-dialog-title">📊 Transit Pulse & Pasageri</div>
+        <button id="close-stats-modal-btn" class="sheet-close-btn">✕</button>
+      </div>
+      <div class="apple-dialog-body">
+        <div class="kpi-cards-grid">
+          <div class="kpi-box">
+            <div class="kpi-title">Pasageri la Bord</div>
+            <div id="stat-total-psg" class="kpi-value tabular-nums" style="color: var(--apple-blue);">0</div>
+            <div class="kpi-subtitle">Total estimat în tranzit</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-title">Vehicule Active</div>
+            <div id="stat-total-vehicles" class="kpi-value tabular-nums" style="color: var(--apple-green);">0</div>
+            <div class="kpi-subtitle">În circulație pe hartă</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-title">Senzori APC Activi</div>
+            <div id="stat-monitored-veh" class="kpi-value tabular-nums" style="font-size: 1.15rem;">0 / 0</div>
+            <div class="kpi-subtitle">Flotă Thoreb conectată</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-title">Medie Ocupare</div>
+            <div id="stat-avg-occupancy" class="kpi-value tabular-nums" style="font-size: 1.15rem; color: var(--apple-green);">0 psg</div>
+            <div class="kpi-subtitle">per vehicul monitorizat</div>
+          </div>
+        </div>
+
+        <div class="kpi-box" style="margin-top: 4px;">
+          <div class="kpi-title">Flux Recent Stații</div>
+          <div id="stat-flow-rates" class="kpi-value tabular-nums" style="font-size: 1.15rem; color: var(--apple-orange);">+0 / -0</div>
+          <div class="kpi-subtitle">Urcați / Coborâți la ultimele opriri</div>
+        </div>
+
+        <div style="margin-top: 8px;">
+          <div class="apple-headline" style="margin-bottom: 6px;">Cele mai aglomerate linii acum</div>
+          <div id="top-crowded-lines-container">
+            <div style="color: var(--apple-secondary-label); font-size: 0.75rem;">Se calculează fluxul...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal D: About & Open Data Info Modal -->
+  <div id="info-modal" class="apple-modal-scrim">
+    <div class="apple-modal-dialog">
+      <div class="sheet-grabber"></div>
+      <div class="apple-dialog-header">
+        <div class="apple-dialog-title">ℹ️ Despre București Transit</div>
+        <button id="close-modal-btn" class="sheet-close-btn">✕</button>
+      </div>
+      <div class="apple-dialog-body">
+        <p>Aplicație de monitorizare în timp real a transportului public din regiunea București - Ilfov (flota STB SA și operatorii regionali TPBI), reproiectată conform standardelor <strong>Apple Design System</strong> și <strong>WWDC Fluid Interfaces</strong>.</p>
+
+        <h4>📡 Surse de Date Open-Data</h4>
+        <ul>
+          <li><strong>Endpoint Open-Data:</strong> <code>https://mo-bi.ro/python_api/</code></li>
+          <li><strong>Endpoint Pasageri (APC):</strong> <code>https://mo-bi.ro/python_api/psg</code></li>
+          <li><strong>Documentație Swagger OpenAPI:</strong> <code>https://mo-bi.ro/swagger/</code></li>
+          <li><strong>Depozit Oficial:</strong> <code>https://github.com/BucharestOpenData</code></li>
+        </ul>
+
+        <h4>⏱️ Smart Caching & Rate Limiting</h4>
+        <p>API-ul oficial impune o limită strictă de <strong>1 cerere la 10 secunde per IP</strong>. Serverul nostru include un Smart Cache autonom sincronizat la fiecare 12 secunde, oferind o experiență instantanee și fluidă.</p>
+
+        <h4>🚌 Tehnologii Flotă STB</h4>
+        <ul>
+          <li><strong>Radcom AVL:</strong> Sistemul de poziționare GPS prin satelit.</li>
+          <li><strong>Thoreb APC & Alert:</strong> Senzori optici 3D de numărare automată a pasagerilor (instalate pe Astra Imperio, Solaris Trollino, Mercedes Citaro Hybrid, ZTE Granton).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 7. Modal E: Bilet TB Tickets & Active Titles Modal ================= -->
+  <div id="tickets-modal" class="apple-modal-scrim">
+    <div class="apple-modal-dialog" style="max-width: 480px;">
+      <div class="sheet-grabber"></div>
+      <div class="apple-dialog-header">
+        <div class="apple-dialog-title" style="display: flex; align-items: center; gap: 8px;">
+          <span>🎟️</span>
+          <span>Bilet TB • Titluri Active</span>
+        </div>
+        <button id="close-tickets-modal-btn" class="sheet-close-btn">✕</button>
+      </div>
+
+      <div class="apple-dialog-body" style="padding: 16px;">
+        <!-- State 1: Login View (shown if logged out) -->
+        <div id="tickets-login-view" style="display: none;">
+          <div style="text-align: center; margin-bottom: 18px;">
+            <div style="width: 52px; height: 52px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 16px; margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+              🚍
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em;">Autentificare Bilet TB</h3>
+            <p style="font-size: 0.78rem; color: var(--apple-secondary-label); margin-top: 4px;">Conectează-te pentru a accesa titlurile tale active și codul QR de control.</p>
+          </div>
+
+          <form id="tickets-login-form" style="display: flex; flex-direction: column; gap: 12px;">
+            <div>
+              <label class="insp-item-label" style="display: block; margin-bottom: 4px;">Email sau Nume Utilizator</label>
+              <input type="text" id="bilet-login-username" class="apple-search-input" placeholder="elev.stb@gmail.com" style="width: 100%; height: 42px; background: var(--apple-surface); border: 1px solid var(--apple-border); border-radius: 12px; padding: 0 12px;" required>
+            </div>
+
+            <div>
+              <label class="insp-item-label" style="display: block; margin-bottom: 4px;">Parolă</label>
+              <div style="position: relative;">
+                <input type="password" id="bilet-login-password" class="apple-search-input" placeholder="••••••••" style="width: 100%; height: 42px; background: var(--apple-surface); border: 1px solid var(--apple-border); border-radius: 12px; padding: 0 40px 0 12px;" required>
+                <button type="button" id="bilet-toggle-pwd-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--apple-secondary-label); cursor: pointer; font-size: 14px;">👁️</button>
+              </div>
+            </div>
+
+            <div id="bilet-login-error" style="color: var(--apple-red); font-size: 0.75rem; display: none;"></div>
+
+            <button type="submit" id="bilet-login-submit-btn" class="apple-btn-primary" style="height: 44px; margin-top: 4px;">
+              <span>Autentificare Bilet TB</span>
+            </button>
+
+            <button type="button" id="bilet-login-demo-btn" class="apple-btn-secondary" style="height: 40px;">
+              <span>⚡ Autentificare Rapidă Demo (Abonament Elev STB)</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- State 2: Tickets Dashboard (shown if logged in) -->
+        <div id="tickets-dashboard-view">
+          <!-- User Profile Bar -->
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--apple-surface); border-radius: 16px; border: 1px solid var(--apple-border-subtle); margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--apple-blue); color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+                <span id="bilet-user-avatar">IP</span>
+              </div>
+              <div>
+                <div id="bilet-user-name" style="font-weight: 700; font-size: 0.88rem; color: var(--apple-label);">Ion Popescu</div>
+                <div id="bilet-user-email" style="font-size: 0.72rem; color: var(--apple-secondary-label);">calator.stb@gmail.com</div>
+              </div>
+            </div>
+            <button id="bilet-logout-btn" class="apple-chip" style="padding: 4px 10px; font-size: 0.72rem; color: var(--apple-red); border: 1px solid rgba(255, 69, 58, 0.3); cursor: pointer;" onclick="window.App && window.App.handleLogout && window.App.handleLogout()">Deconectare</button>
+          </div>
+
+          <!-- Segmented Navigation (Titluri Active / Portofel / Cumpără) -->
+          <div class="apple-segmented-control" style="margin-bottom: 14px;">
+            <button id="bilet-tab-active-btn" class="apple-seg-btn active" data-bilet-tab="active" onclick="window.App && window.App.switchBiletTab && window.App.switchBiletTab('active')">
+              🟢 Active (<span id="bilet-count-active">1</span>)
+            </button>
+            <button id="bilet-tab-wallet-btn" class="apple-seg-btn" data-bilet-tab="wallet" onclick="window.App && window.App.switchBiletTab && window.App.switchBiletTab('wallet')">
+              ⚡ Portofel (<span id="bilet-count-wallet">2</span>)
+            </button>
+            <button id="bilet-tab-catalog-btn" class="apple-seg-btn" data-bilet-tab="catalog" onclick="window.App && window.App.switchBiletTab && window.App.switchBiletTab('catalog')">
+              🛒 Cumpără
+            </button>
+          </div>
+
+          <!-- Sub-Tab 1: Active Tickets with Countdown & Inspection QR Code -->
+          <div id="bilet-panel-active" style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 4px; border-bottom: 1px solid var(--apple-border-subtle);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--apple-green); text-transform: uppercase; letter-spacing: 0.03em;">🟢 Titluri Active &bull; Valabile Control</span>
+              <span style="font-size: 0.7rem; color: var(--apple-secondary-label);">Prezintă codul QR la verificare</span>
+            </div>
+            <div id="bilet-active-cards-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Sub-Tab 2: Wallet & Activation -->
+          <div id="bilet-panel-wallet" style="display: none; flex-direction: column; gap: 10px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 4px; border-bottom: 1px solid var(--apple-border-subtle);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--apple-blue); text-transform: uppercase; letter-spacing: 0.03em;">⚡ Portofel Titluri Neactivate</span>
+              <span style="font-size: 0.7rem; color: var(--apple-secondary-label);">Apasă Activează la urcare</span>
+            </div>
+            <div id="bilet-wallet-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Sub-Tab 3: Store & Catalog -->
+          <div id="bilet-panel-catalog" style="display: none; flex-direction: column; gap: 10px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 4px; border-bottom: 1px solid var(--apple-border-subtle);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--apple-orange); text-transform: uppercase; letter-spacing: 0.03em;">🛒 Catalog Titluri Oficiale STB SA</span>
+              <span style="font-size: 0.7rem; color: var(--apple-secondary-label);">Tarife integrate TPBI 2026</span>
+            </div>
+            <div id="bilet-catalog-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- iOS Native Bottom Tab Bar (Apple Human Interface Guidelines) -->
+  <nav id="ios-tab-bar" class="ios-tab-bar" aria-label="Navigare Principală">
+    <button id="tab-btn-map" class="ios-tab-btn active" data-tab="map" aria-label="Hartă Live">
+      <div class="ios-tab-icon-wrap">
+        <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+          <line x1="8" y1="2" x2="8" y2="18"></line>
+          <line x1="16" y1="6" x2="16" y2="22"></line>
+        </svg>
+      </div>
+      <span class="ios-tab-label">Hartă</span>
+    </button>
+
+    <button id="tab-btn-lines" class="ios-tab-btn" data-tab="lines" aria-label="Catalog Linii">
+      <div class="ios-tab-icon-wrap">
+        <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <span class="ios-tab-label">Linii</span>
+    </button>
+
+    <button id="tab-btn-tickets" class="ios-tab-btn" data-tab="tickets" aria-label="Bilete și Abonamente">
+      <div class="ios-tab-icon-wrap">
+        <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+          <line x1="2" y1="10" x2="22" y2="10"></line>
+        </svg>
+        <span id="tab-ticket-badge" class="ios-tab-badge" style="display: none;">1</span>
+      </div>
+      <span class="ios-tab-label">Bilete</span>
+    </button>
+
+    <button id="tab-btn-stats" class="ios-tab-btn" data-tab="stats" aria-label="Statistici Flotă">
+      <div class="ios-tab-icon-wrap">
+        <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+      </div>
+      <span class="ios-tab-label">Statistici</span>
+    </button>
+
+    <button id="tab-btn-layers" class="ios-tab-btn" data-tab="layers" aria-label="Straturi și Setări">
+      <div class="ios-tab-icon-wrap">
+        <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+      </div>
+      <span class="ios-tab-label">Straturi</span>
+    </button>
+  </nav>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- QR Code Generator -->
+  <script src="js/qrcode.min.js?v=20261018_stb_elev_v3"></script>
+
+  <!-- App Modules -->
+  <script src="js/api.js?v=20261018_ios_tabbar_v4"></script>
+  <script src="js/map.js?v=20261018_ios_tabbar_v4"></script>
+  <script src="js/app.js?v=20261018_ios_tabbar_v4"></script>
+</body>
+</html>

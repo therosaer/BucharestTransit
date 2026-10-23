@@ -1,0 +1,18 @@
+# Cursor Rules for BucharestTransit
+
+## Project Context
+- **Name**: BucharestTransit
+- **Platform**: iOS 17+ (Swift 6.4.1, SwiftUI)
+- **Host System**: Linux (using `xtool` cross-compiler)
+
+## Build Commands
+- Build command: `xtool dev build`
+- Deploy to USB phone: `xtool dev run --usb`
+- NEVER run plain `swift build` directly in bash, because Linux host toolchain lacks SwiftUI and WebKit. Always use `xtool dev build`.
+
+## Critical Architecture Notes
+- State Management: Centralized in `Sources/BucharestTransit/Services/AppState.swift` (`AppState.shared`).
+- Map: `Sources/BucharestTransit/Views/Map/OpenStreetMapView.swift` running Leaflet inside `WKWebView`. Marker count is capped at 75 to maintain 60/120fps.
+- Timetables: GTFS schedule arrays (`schedule_wd`, `schedule_we`) are inside `Resources/line_routes_index.json` and parsed by `Station.nextDepartures()`.
+- Categories: "Autobuz & Troleibuz" must stay combined.
+- UI Style: Follow `docs/apple_design_guide.md` — Romanian text, liquid glass materials, spring transitions.
