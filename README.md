@@ -1,5 +1,7 @@
 # BucharestTransit
 
+<img width="1024" height="1024" alt="AppIcon" src="https://github.com/user-attachments/assets/c3d8373b-4977-458e-965b-945cb061be1b" />
+
 ## English
 
 BucharestTransit is a Romanian-language iOS app for exploring public transport in Bucharest and Ilfov. It brings live vehicle positions, route information, bundled timetables, and map layers together in a native SwiftUI app.
