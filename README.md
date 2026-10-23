@@ -1,6 +1,6 @@
 # BucharestTransit
 
-<img width="1024" height="1024" alt="AppIcon" src="https://github.com/user-attachments/assets/c3d8373b-4977-458e-965b-945cb061be1b" />
+<img width="512" height="512" alt="AppIcon" src="https://github.com/user-attachments/assets/c3d8373b-4977-458e-965b-945cb061be1b" />
 
 ## English
 
