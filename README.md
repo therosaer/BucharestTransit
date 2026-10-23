@@ -26,7 +26,7 @@ The interface is currently available in Romanian. Live vehicle data and ticket-a
 |:---:|:---:|
 | <img src="docs/screenshots/live-vehicle-map.jpg" alt="Live public transport vehicles on the Bucharest map" width="220"> | <img src="docs/screenshots/line-directory.jpg" alt="The public transport route directory" width="220"> |
 
-| Student and pupil tickets | Vehicle cluster map |
+| Student tickets | Station cluster map |
 |:---:|:---:|
 | <img src="docs/screenshots/student-tickets.jpg" alt="YouthTB account screen for students and pupils" width="220"> | <img src="docs/screenshots/vehicle-cluster-map.jpg" alt="Map showing clustered public transport vehicles" width="220"> |
 
