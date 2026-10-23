@@ -20,6 +20,16 @@ BucharestTransit is a Romanian-language iOS app for exploring public transport i
 
 The interface is currently available in Romanian. Live vehicle data and ticket-account features require an internet connection; map tiles are provided by external services.
 
+### Screenshots
+
+| Live vehicle map | Route directory |
+|:---:|:---:|
+| <img src="docs/screenshots/live-vehicle-map.jpg" alt="Live public transport vehicles on the Bucharest map" width="220"> | <img src="docs/screenshots/line-directory.jpg" alt="The public transport route directory" width="220"> |
+
+| Student and pupil tickets | Vehicle cluster map |
+|:---:|:---:|
+| <img src="docs/screenshots/student-tickets.jpg" alt="YouthTB account screen for students and pupils" width="220"> | <img src="docs/screenshots/vehicle-cluster-map.jpg" alt="Map showing clustered public transport vehicles" width="220"> |
+
 ### Requirements
 
 - iOS 17 or later
@@ -88,6 +98,10 @@ Aplicație iOS în limba română pentru explorarea transportului public din Buc
 - **Date locale la pornire**, astfel încât harta poate afișa o copie inclusă a vehiculelor când datele live nu sunt disponibile.
 
 Interfața este momentan disponibilă în limba română. Datele live despre vehicule și funcțiile contului de bilete necesită conexiune la internet; dalele hărții sunt furnizate de servicii externe.
+
+## Capturi de ecran
+
+Vezi capturile de ecran de mai sus: harta vehiculelor live, catalogul de linii, secțiunea pentru elevi și studenți și harta cu vehicule grupate.
 
 ## Cerințe
 

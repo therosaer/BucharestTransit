@@ -98,6 +98,8 @@ public struct OpenStreetMapView: UIViewRepresentable {
         weak var webView: WKWebView?
         private let locationManager = CLLocationManager()
         private var locationRequestPending = false
+        private var didShowLocationForPendingRequest = false
+        private var pendingUserLocation: CLLocation?
         var isMapReady = false
         var pendingVehicles: [Vehicle]?
         var pendingLineData: LineDetails?
@@ -116,13 +118,18 @@ public struct OpenStreetMapView: UIViewRepresentable {
             self.parent = parent
             super.init()
             locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         }
 
         func requestUserLocation() {
             locationRequestPending = true
+            didShowLocationForPendingRequest = false
             switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse:
+                if let cachedLocation = locationManager.location, isRecentUsableLocation(cachedLocation) {
+                    showUserLocation(cachedLocation)
+                    didShowLocationForPendingRequest = true
+                }
                 locationManager.requestLocation()
             case .notDetermined:
                 locationManager.requestWhenInUseAuthorization()
@@ -158,18 +165,35 @@ public struct OpenStreetMapView: UIViewRepresentable {
                 return
             }
             locationRequestPending = false
+            didShowLocationForPendingRequest = true
             parent.appState.locationError = nil
+            showUserLocation(location)
+        }
+
+        public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+            locationRequestPending = false
+            guard !didShowLocationForPendingRequest else { return }
+            parent.appState.locationError = "Nu s-a putut obține locația: \(error.localizedDescription)"
+        }
+
+        private func isRecentUsableLocation(_ location: CLLocation) -> Bool {
+            let age = Date().timeIntervalSince(location.timestamp)
+            return age >= -5 && age <= 60
+                && location.horizontalAccuracy >= 0
+                && location.horizontalAccuracy <= 500
+        }
+
+        private func showUserLocation(_ location: CLLocation) {
+            guard isMapReady else {
+                pendingUserLocation = location
+                return
+            }
             let coordinate = location.coordinate
             let accuracy = max(0, location.horizontalAccuracy)
             webView?.evaluateJavaScript(
                 "window.showUserLocation(\(coordinate.latitude), \(coordinate.longitude), \(accuracy));",
                 completionHandler: nil
             )
-        }
-
-        public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-            locationRequestPending = false
-            parent.appState.locationError = "Nu s-a putut obține locația: \(error.localizedDescription)"
         }
 
         func setMapStyle(_ style: MapTileStyle, isDark: Bool) {
@@ -222,6 +246,10 @@ public struct OpenStreetMapView: UIViewRepresentable {
 
             if type == "ready" {
                 isMapReady = true
+                if let location = pendingUserLocation {
+                    showUserLocation(location)
+                    pendingUserLocation = nil
+                }
                 setMapStyle(
                     MapTileStyle(rawValue: parent.mapTileStyle) ?? .standard,
                     isDark: parent.colorScheme == .dark
