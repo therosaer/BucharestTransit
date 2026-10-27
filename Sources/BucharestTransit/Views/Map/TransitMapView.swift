@@ -8,7 +8,6 @@ import _MapKit_SwiftUI
 public struct TransitMapView: View {
     @ObservedObject var appState: AppState
     @AppStorage("map_hide_stale_vehicles") private var hideStaleVehicles = false
-    @State private var locateTrigger: Int = 0
     @State private var lineExplorerDetent: PresentationDetent = .fraction(0.42)
 
     public var body: some View {
@@ -20,7 +19,7 @@ public struct TransitMapView: View {
                 selectedLine: appState.selectedLine,
                 activeLineData: appState.activeLineData,
                 lineDirection: appState.lineDirection,
-                locateTrigger: locateTrigger,
+                locateTrigger: appState.locateTrigger,
                 selectedVehicle: appState.selectedVehicle,
                 onVehicleTapped: { v in
                     HapticFeedback.trigger(.medium)
@@ -30,12 +29,24 @@ public struct TransitMapView: View {
             .ignoresSafeArea()
             .zIndex(0)
 
-            // MARK: - Top Floating UI (Search + Chips)
+            // MARK: - Top Floating UI (Search, toggled from the dock)
             VStack(spacing: 8) {
-                SearchCapsuleView(appState: appState)
+                if appState.isMapSearchPresented {
+                    SearchCapsuleView(appState: appState)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                } else {
+                    HStack {
+                        Spacer()
+                        TicketCountdownPill(appState: appState)
+                    }
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
+                    .transition(.opacity)
+                }
             }
+            .animation(.bouncy(duration: 0.45), value: appState.isMapSearchPresented)
             .zIndex(10)
 
             // MARK: - Floating Apple Action Dock (Locate, Sync, Theme)
@@ -43,33 +54,17 @@ public struct TransitMapView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    VStack(spacing: 10) {
-                        HStack(spacing: 10) {
-                            if appState.showLineExplorer {
-                                ActionButton(icon: "xmark", color: .secondary) {
-                                    HapticFeedback.trigger(.light)
-                                    appState.clearLineSelection()
-                                }
-                                .accessibilityLabel("Închide traseul")
-                            }
-
-                            // Locate User
-                            ActionButton(icon: "location.fill", color: .appleBlue) {
-                                HapticFeedback.trigger(.medium)
-                                locateTrigger += 1
-                            }
+                    if appState.showLineExplorer {
+                        ActionButton(icon: "xmark", color: .secondary) {
+                            HapticFeedback.trigger(.light)
+                            appState.clearLineSelection()
                         }
-
-                        // Sync Refresh
-                        ActionButton(icon: "arrow.clockwise", color: .primary, isSpinning: appState.isSyncing) {
-                            HapticFeedback.trigger(.medium)
-                            Task { await appState.refreshData() }
-                        }
+                        .frame(width: 52, height: 52)
+                        .nativeGlass(in: Circle())
+                        .accessibilityLabel("Închide traseul")
+                        .padding(.trailing, 84)
+                        .padding(.bottom, 96)
                     }
-                    .padding(8)
-                    .liquidGlass(cornerRadius: 18)
-                    .padding(.trailing, 16)
-                    .padding(.bottom, 24)
                 }
             }
         }

@@ -43,33 +43,12 @@ public struct SearchCapsuleView: View {
                     }
                 }
 
-                // Quick Ticket Countdown Pill (Apple Live Activity Capsule style)
-                if let activeTicket = appState.biletActiveTickets.first, let remaining = activeTicket.remainingSeconds, remaining > 0 {
-                    Button(action: {
-                        HapticFeedback.trigger(.medium)
-                        appState.selectedTab = .tickets
-                    }) {
-                        HStack(spacing: 5) {
-                            Image(systemName: "ticket.fill")
-                                .font(.caption)
-                            Text(TransitTimeFormatter.formatRemaining(seconds: remaining))
-                                .font(.caption.weight(.bold))
-                                .monospacedDigit()
-                                .foregroundColor(.appleGreen)
-                        }
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 5)
-                        .background(Color.appleGreen.opacity(0.15))
-                        .overlay(
-                            Capsule().stroke(Color.appleGreen.opacity(0.35), lineWidth: 1)
-                        )
-                        .clipShape(Capsule())
-                    }
-                }
+                // Quick Ticket Countdown Pill lives in TicketCountdownPill (shown when search is closed)
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
-            .liquidGlass(cornerRadius: 22)
+            .nativeGlass(in: Capsule())
+            .onAppear { isSearchFocused = true }
 
             // Real-time Autocomplete Dropdown
             if isSearchFocused && !appState.searchQuery.trimmingCharacters(in: .whitespaces).isEmpty {
@@ -117,7 +96,7 @@ public struct SearchCapsuleView: View {
                             Divider()
                         }
                     }
-                    .liquidGlass(cornerRadius: 18)
+                    .nativeGlass(cornerRadius: 18)
                     .transition(.opacity.combined(with: .move(edge: .top)))
                 }
             }
@@ -151,6 +130,38 @@ public struct SearchCapsuleView: View {
             if aLine.hasPrefix(q) && !bLine.hasPrefix(q) { return true }
             if bLine.hasPrefix(q) && !aLine.hasPrefix(q) { return false }
             return a.activeVehicles > b.activeVehicles
+        }
+    }
+}
+
+/// Live countdown for the next active ticket. Renders nothing when there is no active ticket.
+public struct TicketCountdownPill: View {
+    @ObservedObject var appState: AppState
+
+    public init(appState: AppState) {
+        self.appState = appState
+    }
+
+    public var body: some View {
+        if let activeTicket = appState.biletActiveTickets.first, let remaining = activeTicket.remainingSeconds, remaining > 0 {
+            Button(action: {
+                HapticFeedback.trigger(.medium)
+                appState.selectedTab = .tickets
+            }) {
+                HStack(spacing: 5) {
+                    Image(systemName: "ticket.fill")
+                        .font(.caption)
+                    Text(TransitTimeFormatter.formatRemaining(seconds: remaining))
+                        .font(.caption.weight(.bold))
+                        .monospacedDigit()
+                        .foregroundColor(.appleGreen)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .nativeGlass(in: Capsule())
+            }
+            .buttonStyle(.plain)
+            .transition(.scale.combined(with: .opacity))
         }
     }
 }

@@ -112,6 +112,7 @@ public struct LayersSettingsView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
             .navigationTitle("Straturi și Setări")
         }
     }

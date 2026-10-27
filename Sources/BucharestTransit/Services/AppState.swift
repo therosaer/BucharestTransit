@@ -7,7 +7,6 @@ public enum AppTab: String, CaseIterable, Identifiable {
     case lines
     case tickets
     case stats
-    case layers
 
     public var id: String { rawValue }
 
@@ -17,7 +16,6 @@ public enum AppTab: String, CaseIterable, Identifiable {
         case .lines: return "Linii"
         case .tickets: return "Elevi/Stud."
         case .stats: return "Statistici"
-        case .layers: return "Straturi"
         }
     }
 
@@ -27,7 +25,6 @@ public enum AppTab: String, CaseIterable, Identifiable {
         case .lines: return "point.topleft.down.to.point.bottomright.curvepath.fill"
         case .tickets: return "ticket.fill"
         case .stats: return "chart.bar.xaxis"
-        case .layers: return "square.3.layers.3d"
         }
     }
 }
@@ -67,6 +64,9 @@ public final class AppState: ObservableObject {
     @Published public var filterOnRouteOnly: Bool = true
     @Published public var activeModeFilter: String = "all"
     @Published public var searchQuery: String = ""
+    @Published public var isMapSearchPresented: Bool = false
+    /// Incremented by the dock's locate button to recenter the map on the user.
+    @Published public var locateTrigger: Int = 0
 
     // Sheets Presentation
     @Published public var showVehicleInspector: Bool = false
@@ -223,6 +223,12 @@ public final class AppState: ObservableObject {
         selectedLine = nil
         activeLineData = nil
         showLineExplorer = false
+    }
+
+    public func closeMapSearch() {
+        isMapSearchPresented = false
+        searchQuery = ""
+        clearLineSelection()
     }
 
     // MARK: - Stop Selection

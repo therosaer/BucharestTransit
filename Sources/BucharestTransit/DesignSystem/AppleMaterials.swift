@@ -102,6 +102,80 @@ public extension View {
     func liquidGlass(cornerRadius: CGFloat = 32) -> some View {
         modifier(LiquidGlassModifier(cornerRadius: cornerRadius))
     }
+
+    /// Native system Liquid Glass (refraction + touch response) on iOS 26+, material fallback otherwise.
+    func nativeGlass(in shape: Capsule) -> some View {
+        modifier(NativeGlassCapsuleModifier())
+    }
+
+    func nativeGlass(in shape: Circle) -> some View {
+        modifier(NativeGlassCircleModifier())
+    }
+
+    func nativeGlass(cornerRadius: CGFloat) -> some View {
+        modifier(NativeGlassRoundedModifier(cornerRadius: cornerRadius))
+    }
+}
+
+public struct NativeGlassCapsuleModifier: ViewModifier {
+    public func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.glassEffect(.regular.interactive(), in: Capsule())
+        } else {
+            content
+                .background(.ultraThinMaterial, in: Capsule())
+                .overlay(Capsule().strokeBorder(Color.white.opacity(0.3), lineWidth: 0.8))
+                .shadow(color: Color.black.opacity(0.10), radius: 14, x: 0, y: 7)
+        }
+    }
+}
+
+public struct NativeGlassCircleModifier: ViewModifier {
+    public func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.glassEffect(.regular.interactive(), in: Circle())
+        } else {
+            content
+                .background(.ultraThinMaterial, in: Circle())
+                .overlay(Circle().strokeBorder(Color.white.opacity(0.3), lineWidth: 0.8))
+                .shadow(color: Color.black.opacity(0.10), radius: 14, x: 0, y: 7)
+        }
+    }
+}
+
+public struct NativeGlassRoundedModifier: ViewModifier {
+    var cornerRadius: CGFloat
+
+    public func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        if #available(iOS 26.0, *) {
+            content.glassEffect(.regular.interactive(), in: shape)
+        } else {
+            content
+                .background(.ultraThinMaterial, in: shape)
+                .overlay(shape.strokeBorder(Color.white.opacity(0.3), lineWidth: 0.8))
+                .shadow(color: Color.black.opacity(0.10), radius: 14, x: 0, y: 7)
+        }
+    }
+}
+
+/// Groups adjacent native glass elements so they blend and morph together on iOS 26+.
+public struct NativeGlassContainer<Content: View>: View {
+    var spacing: CGFloat
+    @ViewBuilder var content: Content
+
+    public init(spacing: CGFloat = 12, @ViewBuilder content: () -> Content) {
+        self.spacing = spacing
+        self.content = content()
+    }
+
+    public var body: some View {
+        if #available(iOS 26.0, *) {
+            GlassEffectContainer(spacing: spacing) { content }
+        } else {
+            content
+        }
+    }
 }
 
 public enum TransitTimeFormatter {
