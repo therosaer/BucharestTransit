@@ -81,15 +81,6 @@ tools/web-prototype-and-data/   Earlier web prototype and related data
 
 Issues and pull requests are welcome. Include the affected iOS version and reproduction steps in bug reports. For changes to transit data or map layers, include the source and applicable license or attribution requirements.
 
-### Changelog
-
-#### 1.1
-
-- Redesigned the bottom dock: a draggable glass tab selector (drag or tap to switch tabs) and round glass buttons, using native Liquid Glass on supported iOS versions.
-- The locate button now sits centered above the search button in the dock.
-- Settings moved from a bottom tab to a gear button in the top-right corner of the map. It appears only on the map tab.
-- Settings opens as a sheet, black in dark mode, and uses the same background as the other screens.
-
 ## Romanian
 
 Aplicație iOS în limba română pentru explorarea transportului public din București și Ilfov. Reunește pozițiile live ale vehiculelor, informațiile despre linii, orarele incluse în aplicație și straturile hărții într-o aplicație nativă SwiftUI.
@@ -162,15 +153,6 @@ tools/web-prototype-and-data/   Prototipul web anterior și date asociate
 ## Contribuții
 
 Sunt binevenite problemele raportate și pull request-urile. Include versiunea iOS afectată și pașii de reproducere în rapoartele de bug. Pentru modificări ale datelor de transport sau straturilor hărții, indică sursa și cerințele aplicabile de licență sau atribuire.
-
-### Jurnal de modificări
-
-#### 1.1
-
-- Bara de jos a fost redesenată: un selector de tab-uri din sticlă, care poate fi tras sau apăsat, și butoane rotunde din sticlă, cu Liquid Glass nativ pe versiunile de iOS compatibile.
-- Butonul de localizare este acum centrat deasupra butonului de căutare, în bara de jos.
-- Setările au fost mutate dintr-un tab de jos într-un buton cu roată în colțul din dreapta sus al hărții. Apare doar pe tab-ul Hartă.
-- Setările se deschid ca foaie, negre în modul întunecat, și au același fundal ca celelalte ecrane.
 
 ## Licență
 
