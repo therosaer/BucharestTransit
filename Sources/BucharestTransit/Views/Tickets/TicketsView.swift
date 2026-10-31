@@ -238,8 +238,8 @@ public struct TicketsView: View {
                     .padding(12)
                     .background(Color.secondary.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
 
-                if let loginError {
-                    Text(loginError)
+                if let message = appState.biletLoginError ?? loginError {
+                    Text(message)
                         .font(.system(size: 12))
                         .foregroundColor(.appleRed)
                 }
@@ -248,11 +248,12 @@ public struct TicketsView: View {
                     HapticFeedback.trigger(.medium)
                     isLoggingIn = true
                     loginError = nil
+                    appState.clearBiletLoginError()
                     Task {
                         let success = await appState.loginBilet(username: usernameInput, pass: passwordInput)
                         isLoggingIn = false
                         if !success {
-                            loginError = "Autentificarea nu a reușit. Verifică datele contului."
+                            loginError = appState.biletLoginError ?? "Autentificarea nu a reușit. Verifică datele contului."
                         }
                     }
                 }) {

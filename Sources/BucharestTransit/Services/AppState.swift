@@ -78,6 +78,7 @@ public final class AppState: ObservableObject {
     @Published public var biletStatus: BiletStatus = BiletStatus(authenticated: false, account: nil, activeTicketsCount: 0, availableTicketsCount: 0)
     @Published public var biletActiveTickets: [Ticket] = []
     @Published public var biletTicketsError: String?
+    @Published public var biletLoginError: String?
     @Published public var biletTicketsLoading = false
 
     private let api = TransitAPIService.shared
@@ -380,12 +381,20 @@ public final class AppState: ObservableObject {
     }
 
     public func loginBilet(username: String, pass: String) async -> Bool {
-        let success = await api.loginBilet(username: username, password: pass)
-        if success {
-            self.biletStatus = await api.fetchBiletStatus()
-            await loadBiletActiveTickets()
+        biletLoginError = nil
+        do {
+            try await api.loginBilet(username: username, password: pass)
+        } catch {
+            biletLoginError = error.localizedDescription
+            return false
         }
-        return success
+        self.biletStatus = await api.fetchBiletStatus()
+        await loadBiletActiveTickets()
+        return true
+    }
+
+    public func clearBiletLoginError() {
+        biletLoginError = nil
     }
 
     public func logoutBilet() async {

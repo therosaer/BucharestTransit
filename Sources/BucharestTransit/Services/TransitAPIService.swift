@@ -356,19 +356,32 @@ public actor TransitAPIService {
         var req = URLRequest(url: url)
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        req.httpBody = "{}".data(using: .utf8)
+        req.setValue("application/json, text/plain, */*", forHTTPHeaderField: "Accept")
         req.timeoutInterval = 30
-            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
-        let authorizationHeader = bearerAuthorizationPrefix + token
-        req.setValue(authorizationHeader, forHTTPHeaderField: "Authorization")
+        // The backoffice answers an empty body with HTTP 500. The official Bilet TB
+        // client always sends this filter/paging envelope (STB location => delay 0).
+        let payload: [String: Any] = [
+            "filter": [
+                "isActive": true,
+                "expirationMinutesDelay": 0
+            ],
+            "paging": [
+                "pageNo": 1,
+                "size": 50
+            ]
+        ]
+        req.httpBody = try JSONSerialization.data(withJSONObject: payload)
+
+        req.setValue(bearerAuthorizationPrefix + token, forHTTPHeaderField: "Authorization")
         let (data, response) = try await URLSession.shared.data(for: req)
         guard let http = response as? HTTPURLResponse else {
             throw BiletAPIError.invalidResponse
         }
         guard http.statusCode == 200 else {
-            throw BiletAPIError.httpStatus(http.statusCode)
+            let detail = serverProblemMessage(from: data)
+            logger.error("active-user-tickets failed with HTTP \(http.statusCode, privacy: .public): \(detail ?? "<no body>", privacy: .public)")
+            throw BiletAPIError.httpStatus(http.statusCode, detail)
         }
         guard let rawTickets = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
             throw BiletAPIError.unexpectedPayload
@@ -405,46 +418,73 @@ public actor TransitAPIService {
 
     }
 
-    public func loginBilet(username: String, password: String) async -> Bool {
+
+    public func loginBilet(username: String, password: String) async throws {
         let u = username.trimmingCharacters(in: .whitespaces)
         let p = password.trimmingCharacters(in: .whitespaces)
-        guard !u.isEmpty, !p.isEmpty else { return false }
-
-        // Try direct official STB /authenticate endpoint
-        if let authUrl = URL(string: "\(stbBackofficeURL)/authenticate") {
-            var req = URLRequest(url: authUrl)
-            req.httpMethod = "POST"
-            req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            req.setValue("application/json, text/plain, */*", forHTTPHeaderField: "Accept")
-            req.timeoutInterval = 4.0
-
-            let payload: [String: Any] = [
-                "username": u,
-                "password": p,
-                "rememberMe": true,
-                "deviceUuid": "ios-stb-native-\(abs(u.hashValue))"
-            ]
-
-            if let bodyData = try? JSONSerialization.data(withJSONObject: payload) {
-                req.httpBody = bodyData
-                if let (data, resp) = try? await URLSession.shared.data(for: req),
-                   let http = resp as? HTTPURLResponse, (200...299).contains(http.statusCode) {
-                    if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                       let token = json["id_token"] as? String {
-                        do {
-                            try storeTicketToken(token)
-                            await fetchAndStoreAccount(token: token, defaultUsername: u)
-                            return true
-                        } catch {
-                            logger.error("Unable to save ticket session securely: \(error.localizedDescription, privacy: .public)")
-                            return false
-                        }
-                    }
-                }
-            }
+        guard !u.isEmpty, !p.isEmpty else {
+            throw BiletAPIError.loginRejected(nil, "Completează utilizatorul și parola.")
         }
 
-        return false
+        guard let authUrl = URL(string: "\(stbBackofficeURL)/authenticate") else {
+            throw BiletAPIError.invalidURL
+        }
+
+        var req = URLRequest(url: authUrl)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue("application/json, text/plain, */*", forHTTPHeaderField: "Accept")
+        req.timeoutInterval = 15.0
+
+        let payload: [String: Any] = [
+            "username": u,
+            "password": p,
+            "rememberMe": true,
+            "deviceUuid": Self.stableDeviceUuid()
+        ]
+        req.httpBody = try JSONSerialization.data(withJSONObject: payload)
+
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await URLSession.shared.data(for: req)
+        } catch {
+            logger.error("authenticate request failed: \(error.localizedDescription, privacy: .public)")
+            throw BiletAPIError.loginRejected(nil, error.localizedDescription)
+        }
+
+        guard let http = response as? HTTPURLResponse else {
+            throw BiletAPIError.invalidResponse
+        }
+        guard (200...299).contains(http.statusCode) else {
+            let detail = serverProblemMessage(from: data)
+            logger.error("authenticate failed with HTTP \(http.statusCode, privacy: .public): \(detail ?? "<no body>", privacy: .public)")
+            throw BiletAPIError.loginRejected(http.statusCode, detail)
+        }
+
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let token = json["id_token"] as? String else {
+            logger.error("authenticate returned no id_token")
+            throw BiletAPIError.loginMissingToken
+        }
+
+        do {
+            try storeTicketToken(token)
+        } catch {
+            logger.error("Unable to save ticket session securely: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+        await fetchAndStoreAccount(token: token, defaultUsername: u)
+    }
+
+    private static func stableDeviceUuid() -> String {
+        let key = "stb_bilet_device_uuid"
+        if let existing = UserDefaults.standard.string(forKey: key) {
+            return existing
+        }
+        let generated = "ios-stb-native-\(UUID().uuidString)"
+        UserDefaults.standard.set(generated, forKey: key)
+        return generated
     }
 
     public func logoutBilet() async -> Bool {
@@ -459,14 +499,13 @@ public actor TransitAPIService {
     }
 
     private func fetchAndStoreAccount(token: String, defaultUsername: String) async {
-        if let accUrl = URL(string: "\(stbBackofficeURL)/account") {
+        let deviceUuid = Self.stableDeviceUuid()
+        let encodedUuid = deviceUuid.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? deviceUuid
+        if let accUrl = URL(string: "\(stbBackofficeURL)/account?deviceUuid=\(encodedUuid)") {
             var req = URLRequest(url: accUrl)
-            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-            req.timeoutInterval = 3.5
-            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            req.timeoutInterval = 10.0
 
-            let authorizationHeader = bearerAuthorizationPrefix + token
-            req.setValue(authorizationHeader, forHTTPHeaderField: "Authorization")
+            req.setValue(bearerAuthorizationPrefix + token, forHTTPHeaderField: "Authorization")
             if let (data, resp) = try? await URLSession.shared.data(for: req),
                let http = resp as? HTTPURLResponse, http.statusCode == 200,
                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
@@ -575,12 +614,32 @@ public actor TransitAPIService {
         return nil
     }
 
+    private func serverProblemMessage(from data: Data) -> String? {
+        if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            for key in ["title", "detail", "message"] {
+                if let value = json[key] as? String,
+                   !value.isEmpty,
+                   !value.hasPrefix("error.http.") {
+                    return value
+                }
+            }
+            return nil
+        }
+        guard let raw = String(data: data, encoding: .utf8)?
+            .trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty else {
+            return nil
+        }
+        return String(raw.prefix(300))
+    }
+
     private enum BiletAPIError: LocalizedError {
         case missingAuthentication
         case invalidURL
         case invalidResponse
         case unexpectedPayload
-        case httpStatus(Int)
+        case httpStatus(Int, String?)
+        case loginRejected(Int?, String?)
+        case loginMissingToken
         case keychain(OSStatus)
         case invalidKeychainData
 
@@ -594,8 +653,22 @@ public actor TransitAPIService {
                 return "Serviciul de titluri a trimis un răspuns invalid."
             case .unexpectedPayload:
                 return "Răspunsul serviciului de titluri nu are formatul așteptat."
-            case .httpStatus(let statusCode):
+            case .httpStatus(let statusCode, let serverMessage):
+                if let serverMessage, !serverMessage.isEmpty {
+                    return "Serviciul de titluri a răspuns cu eroarea \(statusCode): \(serverMessage)"
+                }
                 return "Serviciul de titluri a răspuns cu eroarea \(statusCode)."
+            case .loginRejected(let statusCode, let serverMessage):
+                if let statusCode {
+                    if let serverMessage, !serverMessage.isEmpty {
+                        return "Autentificarea a eșuat (eroarea \(statusCode)): \(serverMessage)"
+                    }
+                    return "Autentificarea a eșuat (eroarea \(statusCode))."
+                }
+                if let serverMessage, !serverMessage.isEmpty { return serverMessage }
+                return "Autentificarea nu a reușit."
+            case .loginMissingToken:
+                return "Serverul nu a returnat un token de sesiune."
             case .keychain(let status):
                 return "Sesiunea nu a putut fi salvată în Keychain (eroare \(status))."
             case .invalidKeychainData:
