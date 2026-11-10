@@ -30,6 +30,11 @@ struct StopInspectorSheet: View {
                 .accessibilityLabel("Închide")
             }
 
+            if stop.services.contains(where: { $0.line.uppercased().hasPrefix("M") }),
+               let facilities = MetroGTFSStore.shared.facilities(name: stop.name, lat: stop.lat, lon: stop.lon) {
+                metroFacilitiesView(facilities)
+            }
+
             Text("Linii și următoarele plecări")
                 .font(.system(size: 12, weight: .bold))
                 .foregroundColor(.secondary)
@@ -48,6 +53,43 @@ struct StopInspectorSheet: View {
         .padding(.top, 18)
     }
 
+    private func metroFacilitiesView(_ facilities: MetroFacilities) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Facilități (GTFS)")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(.secondary)
+                .textCase(.uppercase)
+
+            if !facilities.entrances.isEmpty {
+                Label(
+                    "\(facilities.entrances.count) intrări: \(facilities.entrances.prefix(3).joined(separator: " · "))",
+                    systemImage: "door.left.hand.open"
+                )
+            }
+
+            let pathwayText = facilities.pathways
+                .sorted { $0.key < $1.key }
+                .map { "\($0.value) \(MetroGTFSStore.pathwayLabels[$0.key] ?? $0.key)" }
+                .joined(separator: " · ")
+            if !pathwayText.isEmpty {
+                Label(pathwayText, systemImage: "figure.walk")
+            }
+
+            if !facilities.transfers.isEmpty {
+                Label("Transfer: \(facilities.transfers.joined(separator: ", "))", systemImage: "arrow.triangle.swap")
+            }
+
+            Label(
+                facilities.hasRestrooms ? "Toalete publice" : "Fără toalete publice raportate",
+                systemImage: "toilet"
+            )
+        }
+        .font(.system(size: 13))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .appleGlassBackground(cornerRadius: 14)
+    }
+
     private func serviceRow(_ service: StopService) -> some View {
         let station = Station(
             id: service.id,
@@ -57,7 +99,12 @@ struct StopInspectorSheet: View {
             scheduleWd: service.scheduleWd,
             scheduleWe: service.scheduleWe
         )
-        let departures = station.nextDepartures(limit: 3)
+        let isMetro = service.line.uppercased().hasPrefix("M")
+        let gtfsNext = isMetro
+            ? MetroGTFSStore.shared.upcomingDepartures(line: service.line, stationName: stop.name, lat: stop.lat, lon: stop.lon, limit: 3)
+            : nil
+        let departures: [UpcomingDeparture] = gtfsNext
+            ?? station.nextDepartures(limit: 3).map { UpcomingDeparture(minutes: $0.minutes, time: $0.time) }
         let color = Color(hex: service.color ?? "#007AFF")
 
         return Button {

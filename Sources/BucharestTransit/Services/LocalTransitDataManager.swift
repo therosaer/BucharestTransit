@@ -178,7 +178,7 @@ public final class LocalTransitDataManager: Sendable {
         // Data already loaded in init
     }
 
-    private static func resolveResourceURL(name: String, ext: String) -> URL? {
+    static func resolveResourceURL(name: String, ext: String) -> URL? {
         #if SWIFT_PACKAGE
         if let u = Bundle.module.url(forResource: name, withExtension: ext, subdirectory: "Resources") {
             return u

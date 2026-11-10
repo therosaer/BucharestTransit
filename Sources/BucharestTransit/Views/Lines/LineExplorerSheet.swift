@@ -47,8 +47,10 @@ public struct LineExplorerSheet: View {
                 if line.uppercased().hasPrefix("M") {
                     VStack(alignment: .leading, spacing: 4) {
                         Label(
-                            MetroHeadwayEstimate.description(for: line)
-                                .map { "Estimare orientativă: \($0). Ramurile pot avea intervale diferite; trenurile nu sunt urmărite live." }
+                            MetroGTFSStore.shared.scheduleSummary(line: line)
+                                .map { "Orar oficial GTFS: \($0). Trenurile nu sunt urmărite live." }
+                                ?? MetroHeadwayEstimate.description(for: line)
+                                    .map { "Estimare orientativă: \($0). Ramurile pot avea intervale diferite; trenurile nu sunt urmărite live." }
                                 ?? "Fără poziții live disponibile.",
                             systemImage: "clock"
                         )
@@ -78,6 +80,24 @@ public struct LineExplorerSheet: View {
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal, 18)
+
+                if let pdf = TimetablePDFStore.shared.entry(forLine: line) {
+                    HStack(spacing: 12) {
+                        if appState.lineDirection != .retur, let url = pdf.tur {
+                            Link(destination: url) {
+                                Label("Orar PDF Tur", systemImage: "doc.text")
+                            }
+                        }
+                        if appState.lineDirection != .tur, let url = pdf.retur {
+                            Link(destination: url) {
+                                Label("Orar PDF Retur", systemImage: "doc.text")
+                            }
+                        }
+                    }
+                    .font(.system(size: 12, weight: .medium))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 18)
+                }
 
                 // On-route vs All-Assigned filter
                 HStack(spacing: 8) {
@@ -196,7 +216,8 @@ public struct LineExplorerSheet: View {
                                     Spacer()
 
                                     if let eta = line.uppercased().hasPrefix("M")
-                                        ? MetroHeadwayEstimate.description(for: line, stationName: st.name)
+                                        ? (MetroGTFSStore.shared.nextDepartureLabel(line: line, stationName: st.name, lat: st.lat, lon: st.lon)
+                                            ?? MetroHeadwayEstimate.description(for: line, stationName: st.name))
                                         : estimatedArrival(for: st) {
                                         HStack(spacing: 4) {
                                             Image(systemName: "clock.fill")
@@ -218,7 +239,10 @@ public struct LineExplorerSheet: View {
                             .buttonStyle(.plain)
 
                             if expandedStationId == st.id {
-                                let upcoming = st.nextDepartures(limit: 5)
+                                let upcoming: [UpcomingDeparture] = (line.uppercased().hasPrefix("M")
+                                    ? MetroGTFSStore.shared.upcomingDepartures(line: line, stationName: st.name, lat: st.lat, lon: st.lon, limit: 5)
+                                    : nil)
+                                    ?? st.nextDepartures(limit: 5).map { UpcomingDeparture(minutes: $0.minutes, time: $0.time) }
                                 VStack(alignment: .leading, spacing: 4) {
                                     if !upcoming.isEmpty {
                                         Text("Următoarele plecări programate:")

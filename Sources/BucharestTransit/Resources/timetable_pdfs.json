@@ -1,0 +1,982 @@
+{
+ "1": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_1_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_1_1.pdf"
+ },
+ "10": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_10_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_10_1.pdf"
+ },
+ "100": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_100_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_100_1.pdf"
+ },
+ "101": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_101_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_101_1.pdf"
+ },
+ "102": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_102_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_102_1.pdf"
+ },
+ "103": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_103_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_103_1.pdf"
+ },
+ "104": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_104_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_104_1.pdf"
+ },
+ "105": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_105_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_105_1.pdf"
+ },
+ "106": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_106_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_106_1.pdf"
+ },
+ "11": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_11_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_11_1.pdf"
+ },
+ "112": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_112_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_112_1.pdf"
+ },
+ "116": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_116_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_116_1.pdf"
+ },
+ "117": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_117_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_117_1.pdf"
+ },
+ "122": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_122_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_122_1.pdf"
+ },
+ "123": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_123_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_123_1.pdf"
+ },
+ "125": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_125_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_125_1.pdf"
+ },
+ "133": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_133_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_133_1.pdf"
+ },
+ "135": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_135_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_135_1.pdf"
+ },
+ "136": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_136_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_136_1.pdf"
+ },
+ "137": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_137_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_137_1.pdf"
+ },
+ "138": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_138_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_138_1.pdf"
+ },
+ "139": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_139_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_139_1.pdf"
+ },
+ "14": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_14_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_14_1.pdf"
+ },
+ "141": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_141_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_141_1.pdf"
+ },
+ "143": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_143_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_143_1.pdf"
+ },
+ "16": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_16_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_16_1.pdf"
+ },
+ "162": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_162_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_162_1.pdf"
+ },
+ "163": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_163_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_163_1.pdf"
+ },
+ "168": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_168_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_168_1.pdf"
+ },
+ "178": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_178_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_178_1.pdf"
+ },
+ "182": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_182_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_182_1.pdf"
+ },
+ "185": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_185_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_185_1.pdf"
+ },
+ "19": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_19_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_19_1.pdf"
+ },
+ "196": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_196_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_196_1.pdf"
+ },
+ "201": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_201_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_201_1.pdf"
+ },
+ "203": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_203_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_203_1.pdf"
+ },
+ "205": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_205_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_205_1.pdf"
+ },
+ "21": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_21_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_21_1.pdf"
+ },
+ "216": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_216_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_216_1.pdf"
+ },
+ "220": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_220_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_220_1.pdf"
+ },
+ "221": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_221_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_221_1.pdf"
+ },
+ "222": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_222_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_222_1.pdf"
+ },
+ "223": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_223_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_223_1.pdf"
+ },
+ "226": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_226_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_226_1.pdf"
+ },
+ "227": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_227_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_227_1.pdf"
+ },
+ "23": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_23_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_23_1.pdf"
+ },
+ "232": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_232_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_232_1.pdf"
+ },
+ "24": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_24_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_24_1.pdf"
+ },
+ "241": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_241_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_241_1.pdf"
+ },
+ "243": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_243_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_243_1.pdf"
+ },
+ "246": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_246_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_246_1.pdf"
+ },
+ "25": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_25_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_25_1.pdf"
+ },
+ "253": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_253_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_253_1.pdf"
+ },
+ "261": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_261_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_261_1.pdf"
+ },
+ "27": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_27_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_27_1.pdf"
+ },
+ "282": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_282_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_282_1.pdf"
+ },
+ "3": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_3_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_3_1.pdf"
+ },
+ "301": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_301_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_301_1.pdf"
+ },
+ "304": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_304_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_304_1.pdf"
+ },
+ "311": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_311_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_311_1.pdf"
+ },
+ "312": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_312_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_312_1.pdf"
+ },
+ "313": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_313_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_313_1.pdf"
+ },
+ "32": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_32_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_32_1.pdf"
+ },
+ "322": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_322_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_322_1.pdf"
+ },
+ "323": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_323_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_323_1.pdf"
+ },
+ "330": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_330_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_330_1.pdf"
+ },
+ "331": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_331_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_331_1.pdf"
+ },
+ "331B": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_331B_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_331B_1.pdf"
+ },
+ "335": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_335_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_335_1.pdf"
+ },
+ "336": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_336_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_336_1.pdf"
+ },
+ "343": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_343_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_343_1.pdf"
+ },
+ "36": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_36_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_36_1.pdf"
+ },
+ "368": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_368_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_368_1.pdf"
+ },
+ "381": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_381_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_381_1.pdf"
+ },
+ "382": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_382_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_382_1.pdf"
+ },
+ "385": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_385_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_385_1.pdf"
+ },
+ "40": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_40_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_40_1.pdf"
+ },
+ "41": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_41_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_41_1.pdf"
+ },
+ "418": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_418_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_418_1.pdf"
+ },
+ "419": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_419_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_419_1.pdf"
+ },
+ "420": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_420_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_420_1.pdf"
+ },
+ "421": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_421_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_421_1.pdf"
+ },
+ "422": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_422_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_422_1.pdf"
+ },
+ "423": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_423_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_423_1.pdf"
+ },
+ "424": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_424_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_424_1.pdf"
+ },
+ "425": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_425_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_425_1.pdf"
+ },
+ "426": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_426_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_426_1.pdf"
+ },
+ "427": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_427_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_427_1.pdf"
+ },
+ "428": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_428_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_428_1.pdf"
+ },
+ "431": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_431_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_431_1.pdf"
+ },
+ "432": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_432_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_432_1.pdf"
+ },
+ "433": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_433_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_433_1.pdf"
+ },
+ "434": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_434_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_434_1.pdf"
+ },
+ "436": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_436_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_436_1.pdf"
+ },
+ "438": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_438_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_438_1.pdf"
+ },
+ "44": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_44_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_44_1.pdf"
+ },
+ "441": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_441_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_441_1.pdf"
+ },
+ "441B": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_441B_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_441B_1.pdf"
+ },
+ "442": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_442_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_442_1.pdf"
+ },
+ "443": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_443_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_443_1.pdf"
+ },
+ "444": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_444_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_444_1.pdf"
+ },
+ "446": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_446_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_446_1.pdf"
+ },
+ "447": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_447_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_447_1.pdf"
+ },
+ "447B": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_447B_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_447B_1.pdf"
+ },
+ "448": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_448_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_448_1.pdf"
+ },
+ "45": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_45_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_45_1.pdf"
+ },
+ "464": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_464_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_464_1.pdf"
+ },
+ "465": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_465_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_465_1.pdf"
+ },
+ "47": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_47_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_47_1.pdf"
+ },
+ "475": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_475_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_475_1.pdf"
+ },
+ "477": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_477_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_477_1.pdf"
+ },
+ "478": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_478_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_478_1.pdf"
+ },
+ "484": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_484_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_484_1.pdf"
+ },
+ "484B": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_484B_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_484B_1.pdf"
+ },
+ "485": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_485_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_485_1.pdf"
+ },
+ "487": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_487_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_487_1.pdf"
+ },
+ "5": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_5_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_5_1.pdf"
+ },
+ "55": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_55_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_55_1.pdf"
+ },
+ "61": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_61_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_61_1.pdf"
+ },
+ "610": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_610_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_610_1.pdf"
+ },
+ "62": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_62_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_62_1.pdf"
+ },
+ "66": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_66_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_66_1.pdf"
+ },
+ "673": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_673_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_673_1.pdf"
+ },
+ "69": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_69_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_69_1.pdf"
+ },
+ "7": {
+  "type": "tram",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_7_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_7_1.pdf"
+ },
+ "70": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_70_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_70_1.pdf"
+ },
+ "76": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_76_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_76_1.pdf"
+ },
+ "79": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_79_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_79_1.pdf"
+ },
+ "85": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_85_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_85_1.pdf"
+ },
+ "86": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_86_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_86_1.pdf"
+ },
+ "90": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_90_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_90_1.pdf"
+ },
+ "93": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_93_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_93_1.pdf"
+ },
+ "96": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_96_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_96_1.pdf"
+ },
+ "97": {
+  "type": "trolleybus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_97_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_97_1.pdf"
+ },
+ "N1": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N1_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N1_1.pdf"
+ },
+ "N10": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N10_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N10_1.pdf"
+ },
+ "N101": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N101_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N101_1.pdf"
+ },
+ "N102": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N102_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N102_1.pdf"
+ },
+ "N103": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N103_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N103_1.pdf"
+ },
+ "N104": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N104_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N104_1.pdf"
+ },
+ "N105": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N105_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N105_1.pdf"
+ },
+ "N106": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N106_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N106_1.pdf"
+ },
+ "N107": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N107_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N107_1.pdf"
+ },
+ "N108": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N108_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N108_1.pdf"
+ },
+ "N109": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N109_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N109_1.pdf"
+ },
+ "N110": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N110_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N110_1.pdf"
+ },
+ "N111": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N111_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N111_1.pdf"
+ },
+ "N112": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N112_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N112_1.pdf"
+ },
+ "N113": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N113_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N113_1.pdf"
+ },
+ "N114": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N114_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N114_1.pdf"
+ },
+ "N115": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N115_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N115_1.pdf"
+ },
+ "N116": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N116_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N116_1.pdf"
+ },
+ "N117": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N117_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N117_1.pdf"
+ },
+ "N118": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N118_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N118_1.pdf"
+ },
+ "N119": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N119_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N119_1.pdf"
+ },
+ "N120": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N120_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N120_1.pdf"
+ },
+ "N121": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N121_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N121_1.pdf"
+ },
+ "N122": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/1_N122_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/1_N122_1.pdf"
+ },
+ "PV1_403": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_403_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_403_1.pdf"
+ },
+ "PV1_405": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_405_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_405_1.pdf"
+ },
+ "PV1_406": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_406_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_406_1.pdf"
+ },
+ "PV1_407": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_407_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_407_1.pdf"
+ },
+ "PV1_408": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_408_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_408_1.pdf"
+ },
+ "PV1_409": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_409_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_409_1.pdf"
+ },
+ "PV1_409B": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_409B_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_409B_1.pdf"
+ },
+ "PV1_411": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_411_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_411_1.pdf"
+ },
+ "PV1_412": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_412_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_412_1.pdf"
+ },
+ "PV1_413": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_413_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_413_1.pdf"
+ },
+ "PV1_416": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_416_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_416_1.pdf"
+ },
+ "PV1_417": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_417_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_417_1.pdf"
+ },
+ "PV1_439": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_439_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_439_1.pdf"
+ },
+ "PV1_440": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_440_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_440_1.pdf"
+ },
+ "PV1_449": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_449_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_449_1.pdf"
+ },
+ "PV1_450": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_450_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_450_1.pdf"
+ },
+ "PV1_451": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_451_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_451_1.pdf"
+ },
+ "PV1_452": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_452_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_452_1.pdf"
+ },
+ "PV1_454": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_454_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_454_1.pdf"
+ },
+ "PV1_455": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_455_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_455_1.pdf"
+ },
+ "PV1_457": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_457_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_457_1.pdf"
+ },
+ "PV1_458": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_458_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_458_1.pdf"
+ },
+ "PV1_459": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_459_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_459_1.pdf"
+ },
+ "PV1_460": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_460_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_460_1.pdf"
+ },
+ "PV1_461": {
+  "type": null,
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_461_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_461_1.pdf"
+ },
+ "PV1_467": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_467_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_467_1.pdf"
+ },
+ "PV1_468": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_468_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_468_1.pdf"
+ },
+ "PV1_468B": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_468B_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_468B_1.pdf"
+ },
+ "PV1_472": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_472_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_472_1.pdf"
+ },
+ "PV1_473": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_473_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_473_1.pdf"
+ },
+ "PV1_479": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_479_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_479_1.pdf"
+ },
+ "PV1_488": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV1_488_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV1_488_1.pdf"
+ },
+ "PV2_429": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV2_429_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV2_429_1.pdf"
+ },
+ "PV2_470": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV2_470_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV2_470_1.pdf"
+ },
+ "PV2_476": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV2_476_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV2_476_1.pdf"
+ },
+ "PV2_481": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV2_481_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV2_481_1.pdf"
+ },
+ "PV9_462": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV9_462_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV9_462_1.pdf"
+ },
+ "PV9_466": {
+  "type": "bus",
+  "tur": "https://gtfs.tpbi.ro/regional/timetables/PV9_466_0.pdf",
+  "retur": "https://gtfs.tpbi.ro/regional/timetables/PV9_466_1.pdf"
+ }
+}

@@ -81,6 +81,14 @@ tools/web-prototype-and-data/   Earlier web prototype and related data
 
 Issues and pull requests are welcome. Include the affected iOS version and reproduction steps in bug reports. For changes to transit data or map layers, include the source and applicable license or attribution requirements.
 
+### Changelog
+
+#### 1.3
+
+- Metro lines M1–M5 use official GTFS timetables for next departures and schedule summaries, replacing estimates where a schedule exists.
+- Metro stations show street-level entrances and facilities (such as public restrooms) in the stop inspector and line explorer.
+- Bus, trolleybus and tram lines link to the official tur and retur timetable PDFs from gtfs.tpbi.ro in the line explorer. Links open in the browser and are not stored in the app.
+
 ## Romanian
 
 Aplicație iOS în limba română pentru explorarea transportului public din București și Ilfov. Reunește pozițiile live ale vehiculelor, informațiile despre linii, orarele incluse în aplicație și straturile hărții într-o aplicație nativă SwiftUI.
@@ -153,6 +161,14 @@ tools/web-prototype-and-data/   Prototipul web anterior și date asociate
 ## Contribuții
 
 Sunt binevenite problemele raportate și pull request-urile. Include versiunea iOS afectată și pașii de reproducere în rapoartele de bug. Pentru modificări ale datelor de transport sau straturilor hărții, indică sursa și cerințele aplicabile de licență sau atribuire.
+
+### Jurnal de modificări
+
+#### 1.3
+
+- Liniile de metrou M1–M5 folosesc orarele GTFS oficiale pentru următoarele plecări și sumarul programului, în locul estimărilor acolo unde există un orar.
+- Stațiile de metrou afișează intrările de la stradă și facilitățile (de exemplu toalete publice) în inspectorul stației și în explorarea liniei.
+- Liniile de autobuz, troleibuz și tramvai au linkuri către PDF-urile oficiale cu orarele tur și retur de pe gtfs.tpbi.ro, în explorarea liniei. Linkurile se deschid în browser și nu sunt stocate în aplicație.
 
 ## Licență
 
