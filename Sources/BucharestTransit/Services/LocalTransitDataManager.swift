@@ -81,6 +81,22 @@ public final class LocalTransitDataManager: Sendable {
     private let mapStops: [MapStop]
     private static let lineIndex: [String: RawLineRouteEntry] = loadLineIndex()
 
+    /// `line_routes_index.json` is keyed by GTFS route id, which can numerically equal a
+    /// different line's public number (route id 143 is line 106). Always resolve a line
+    /// through the entry's own `line` field, never through the dictionary key.
+    private static let lineIndexByLine: [String: RawLineRouteEntry] = {
+        var result: [String: RawLineRouteEntry] = [:]
+        for key in lineIndex.keys.sorted() {
+            guard let entry = lineIndex[key] else { continue }
+            let line = (entry.line ?? key).uppercased().trimmingCharacters(in: .whitespaces)
+            // Prefer the entry whose key already equals the line; otherwise first by sorted key.
+            if result[line] == nil || key.uppercased() == line {
+                result[line] = entry
+            }
+        }
+        return result
+    }()
+
     private init() {
         var rMap: [String: RouteMetadata] = [:]
 
@@ -280,7 +296,7 @@ public final class LocalTransitDataManager: Sendable {
     public func lineDetails(line: String, liveVehicles: [Vehicle] = []) -> LineDetails? {
         loadDataIfNeeded()
         let key = line.uppercased().trimmingCharacters(in: .whitespaces)
-        guard let raw = Self.lineIndex[key] else { return nil }
+        guard let raw = Self.lineIndexByLine[key] else { return nil }
 
         let meta = metadataForLine(key)
 

@@ -5318,5 +5318,17 @@
     ],
     "max_fleet": 11,
     "headway_min": 8
+  },
+  "PV1_420": {
+    "route_id": "PV1_420",
+    "line": "420",
+    "type": "regional_bus",
+    "typeName": "Autobuz Regional",
+    "color": "#662483",
+    "operator": "STV SA",
+    "terminals": [
+      "Vidra",
+      "C.f.r. Progresul"
+    ]
   }
 }
