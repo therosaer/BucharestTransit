@@ -20,16 +20,17 @@ public struct QRCodeView: View {
                     Image(systemName: "qrcode")
                         .font(.system(size: 36))
                     Text("Cod QR indisponibil")
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.caption.weight(.semibold))
                     Text("Imaginea oficială a biletului nu a putut fi încărcată.")
-                        .font(.system(size: 10))
+                        .font(.caption2)
                         .multilineTextAlignment(.center)
                 }
                 .foregroundStyle(.secondary)
                 .padding(12)
             }
         }
-        .frame(width: 190, height: 190)
+        .frame(maxWidth: 280)
+        .aspectRatio(1, contentMode: .fit)
         .padding(14)
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))

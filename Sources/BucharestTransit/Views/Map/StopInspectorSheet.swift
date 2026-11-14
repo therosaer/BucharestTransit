@@ -9,12 +9,12 @@ struct StopInspectorSheet: View {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("STAȚIE")
-                        .font(.system(size: 11, weight: .bold))
+                        .font(.system(.caption2, weight: .bold))
                         .foregroundColor(.secondary)
                         .textCase(.uppercase)
 
                     Text(stop.name)
-                        .font(.system(size: 21, weight: .bold, design: .rounded))
+                        .font(.system(.title3, design: .rounded, weight: .bold))
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
@@ -36,7 +36,7 @@ struct StopInspectorSheet: View {
             }
 
             Text("Linii și următoarele plecări")
-                .font(.system(size: 12, weight: .bold))
+                .font(.system(.caption, weight: .bold))
                 .foregroundColor(.secondary)
                 .textCase(.uppercase)
 
@@ -56,7 +56,7 @@ struct StopInspectorSheet: View {
     private func metroFacilitiesView(_ facilities: MetroFacilities) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Facilități (GTFS)")
-                .font(.system(size: 12, weight: .bold))
+                .font(.system(.caption, weight: .bold))
                 .foregroundColor(.secondary)
                 .textCase(.uppercase)
 
@@ -84,7 +84,7 @@ struct StopInspectorSheet: View {
                 systemImage: "toilet"
             )
         }
-        .font(.system(size: 13))
+        .font(.footnote)
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
         .appleGlassBackground(cornerRadius: 14)
@@ -113,7 +113,7 @@ struct StopInspectorSheet: View {
         } label: {
             HStack(alignment: .top, spacing: 12) {
                 Text(service.line)
-                    .font(.system(size: 14, weight: .heavy, design: .rounded))
+                    .font(.system(.subheadline, design: .rounded, weight: .heavy))
                     .foregroundColor(.white)
                     .frame(minWidth: 42, minHeight: 32)
                     .background(color, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
@@ -121,31 +121,31 @@ struct StopInspectorSheet: View {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
                         Text(service.direction)
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.system(.subheadline, weight: .semibold))
                         if let typeName = service.typeName {
                             Text("· \(typeName)")
-                                .font(.system(size: 12))
+                                .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
 
                     if let next = departures.first {
                         Text(next.minutes == 0 ? "Plecare acum · \(next.time)" : "În \(next.minutes) min · \(next.time)")
-                            .font(.system(size: 13, weight: .bold))
+                            .font(.system(.footnote, weight: .bold))
                             .foregroundColor(.appleBlue)
 
                         if departures.count > 1 {
                             Text("Următoarele: \(departures.dropFirst().map(\.time).joined(separator: " · "))")
-                                .font(.system(size: 12))
+                                .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     } else if station.todayDepartures.isEmpty {
                         Text("Orar indisponibil")
-                            .font(.system(size: 12))
+                            .font(.caption)
                             .foregroundColor(.secondary)
                     } else {
                         Text("Programul de azi s-a încheiat")
-                            .font(.system(size: 12))
+                            .font(.caption)
                             .foregroundColor(.secondary)
                     }
                 }
@@ -153,7 +153,7 @@ struct StopInspectorSheet: View {
                 Spacer(minLength: 0)
 
                 Image(systemName: "map")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(.subheadline, weight: .semibold))
                     .foregroundColor(.secondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

@@ -9,7 +9,7 @@ public struct VehicleInspectorSheet: View {
             // Header
             HStack(spacing: 14) {
                 Text(vehicle.line)
-                    .font(.system(size: 24, weight: .heavy, design: .rounded))
+                    .font(.system(.title2, design: .rounded, weight: .heavy))
                     .foregroundColor(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
@@ -17,10 +17,10 @@ public struct VehicleInspectorSheet: View {
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text("\(vehicle.vehicleType?.displayName ?? "Vehicul") #\(vehicle.label ?? vehicle.id)")
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.system(.body, weight: .bold))
 
                     Text([directionLabel, serviceStatus].compactMap { $0 }.joined(separator: " · "))
-                        .font(.system(size: 12))
+                        .font(.caption)
                         .foregroundColor(serviceStatusColor)
                 }
 
@@ -63,7 +63,7 @@ public struct VehicleInspectorSheet: View {
             .padding(.horizontal, 20)
 
             Text(vehicle.telemetryStatusDescription)
-                .font(.system(size: 12, weight: .medium))
+                .font(.system(.caption, weight: .medium))
                 .foregroundColor(vehicle.dataSource == .snapshot || vehicle.isTelemetryStale == true ? .appleOrange : .secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)
@@ -79,7 +79,7 @@ public struct VehicleInspectorSheet: View {
                         Image(systemName: appState.isFollowingVehicle ? "location.slash.fill" : "location.fill")
                         Text(appState.isFollowingVehicle ? "Oprește" : "Urmărește")
                     }
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(.subheadline, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
@@ -95,7 +95,7 @@ public struct VehicleInspectorSheet: View {
                         Image(systemName: "map.fill")
                         Text("Traseu Linie")
                     }
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(.subheadline, weight: .semibold))
                     .foregroundColor(.primary)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
@@ -107,7 +107,7 @@ public struct VehicleInspectorSheet: View {
 
             if appState.isFollowingVehicle {
                 Text("Urmărirea este disponibilă pe ecranul blocat și în Dynamic Island.")
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.system(.caption, weight: .medium))
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 20)
@@ -189,15 +189,15 @@ private struct MetricCard: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 4) {
                 Image(systemName: icon)
-                    .font(.system(size: 10))
+                    .font(.caption2)
                     .foregroundColor(.secondary)
                 Text(title)
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.system(.caption2, weight: .semibold))
                     .foregroundColor(.secondary)
                     .textCase(.uppercase)
             }
             Text(value)
-                .font(.system(size: 15, weight: .bold, design: .rounded))
+                .font(.system(.subheadline, design: .rounded, weight: .bold))
                 .foregroundColor(valueColor)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

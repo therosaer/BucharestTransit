@@ -26,7 +26,7 @@ public struct TransitPulseView: View {
                     }
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
-                    .appleGlassBackground(cornerRadius: 14)
+                    .groupedCardBackground(cornerRadius: 14)
 
                     // Main KPI Cards
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
@@ -71,7 +71,7 @@ public struct TransitPulseView: View {
                             TypeRow(name: "Metrou (Metrorex M1-M5)", count: byType["metro"] ?? (byType["subway"] ?? 0), color: .appleOrange, icon: "tram.tunnel.fill")
                         }
                         .padding(16)
-                        .appleGlassBackground(cornerRadius: 18)
+                        .groupedCardBackground(cornerRadius: 18)
                     }
 
                 }
@@ -79,6 +79,7 @@ public struct TransitPulseView: View {
                 .padding(.top, 10)
                 .padding(.bottom, 24)
             }
+            .background(Color.appBackground)
             .navigationTitle("Statistici Flotă")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -152,7 +153,7 @@ private struct KPICard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .appleGlassBackground(cornerRadius: 18)
+        .groupedCardBackground(cornerRadius: 18)
     }
 }
 

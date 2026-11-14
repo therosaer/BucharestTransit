@@ -509,6 +509,11 @@ public struct OpenStreetMapView: UIViewRepresentable {
               border-top: 5px solid currentColor;
               margin-top: -1px;
             }
+            .custom-station-icon {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
             .station-marker {
               width: 13px;
               height: 13px;
@@ -577,6 +582,11 @@ public struct OpenStreetMapView: UIViewRepresentable {
           zoomControl: false,
           doubleClickZoom: false
         });
+
+        // Route arrows sit below stations, stations above everything else, so a
+        // station is always tappable even when a route line runs through it.
+        map.createPane('routeArrowPane').style.zIndex = 450;
+        map.createPane('routeStationPane').style.zIndex = 650;
 
         var lastMapTap = null;
         var currentMapTap = null;
@@ -1156,13 +1166,13 @@ public struct OpenStreetMapView: UIViewRepresentable {
           var routeColor = currentLineColor;
           var stopColor = getStopMarkerColor({ line: lineName, typeName: lineType });
           if ((directionMode === 'both' || directionMode === 'tur') && turCoords && turCoords.length > 0) {
-            turRouteLayer = L.polyline(turCoords, { color: routeColor, weight: 5, opacity: 0.9, lineJoin: 'round' }).addTo(map);
+            turRouteLayer = L.polyline(turCoords, { color: routeColor, weight: 5, opacity: 0.9, lineJoin: 'round', interactive: false }).addTo(map);
             boundsCoords = boundsCoords.concat(turCoords);
             addRouteDirectionMarker(turCoords, 'Tur → ' + (turTerminal || 'Capăt Tur'), routeColor);
           }
           if ((directionMode === 'both' || directionMode === 'retur') && returCoords && returCoords.length > 0) {
             var returColor = (directionMode === 'both') ? '#34C759' : routeColor;
-            returRouteLayer = L.polyline(returCoords, { color: returColor, weight: 5, opacity: 0.9, lineJoin: 'round' }).addTo(map);
+            returRouteLayer = L.polyline(returCoords, { color: returColor, weight: 5, opacity: 0.9, lineJoin: 'round', interactive: false }).addTo(map);
             boundsCoords = boundsCoords.concat(returCoords);
             addRouteDirectionMarker(returCoords, 'Retur → ' + (returTerminal || 'Capăt Retur'), returColor);
           }
@@ -1172,10 +1182,10 @@ public struct OpenStreetMapView: UIViewRepresentable {
               var icon = L.divIcon({
                 className: 'custom-station-icon',
                 html: '<div class="station-marker" style="border-color:' + stopColor + ';"></div>',
-                iconSize: [13, 13],
-                iconAnchor: [6.5, 6.5]
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
               });
-              var sm = L.marker([st.lat, st.lon], { icon: icon }).addTo(routeStationLayer);
+              var sm = L.marker([st.lat, st.lon], { icon: icon, pane: 'routeStationPane' }).addTo(routeStationLayer);
 
               sm.on('click', function() {
                 var data = calculateArrivalsForStation(st, currentLineName);
@@ -1240,7 +1250,7 @@ public struct OpenStreetMapView: UIViewRepresentable {
               iconSize: [25, 25],
               iconAnchor: [12, 12]
             });
-            var marker = L.marker(point, { icon: icon, interactive: Boolean(terminalLabel) }).addTo(map);
+            var marker = L.marker(point, { icon: icon, pane: 'routeArrowPane', interactive: Boolean(terminalLabel) }).addTo(map);
             if (terminalLabel) {
               marker.bindTooltip(terminalLabel, {
                 permanent: true,
@@ -1278,6 +1288,7 @@ public struct OpenStreetMapView: UIViewRepresentable {
               iconSize: [25, 25],
               iconAnchor: [12, 12]
             }),
+            pane: 'routeArrowPane',
             interactive: true
           }).addTo(map);
           marker.bindTooltip(label, {

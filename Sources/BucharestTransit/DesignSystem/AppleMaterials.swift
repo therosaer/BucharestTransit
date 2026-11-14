@@ -1,12 +1,34 @@
 import SwiftUI
 
 public extension Color {
-    static let appleBlue = Color(hex: "#007AFF")
-    static let appleGreen = Color(hex: "#34C759")
-    static let appleOrange = Color(hex: "#FF9500")
-    static let appleRed = Color(hex: "#FF3B30")
-    static let applePurple = Color(hex: "#AF52DE")
-    static let appleIndigo = Color(hex: "#5856D6")
+    // Semantic system colors: adapt to dark mode and Increase Contrast automatically.
+    static let appleBlue = Color(uiColor: .systemBlue)
+    static let appleGreen = Color(uiColor: .systemGreen)
+    static let appleOrange = Color(uiColor: .systemOrange)
+    static let appleRed = Color(uiColor: .systemRed)
+    static let applePurple = Color(uiColor: .systemPurple)
+    static let appleIndigo = Color(uiColor: .systemIndigo)
+
+    /// Page background that stays pure black in dark mode, even inside sheets
+    /// (sheets otherwise switch to the elevated dark-gray grouped background).
+    static let appBackground = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark ? .black : .systemGroupedBackground
+    })
+
+    /// Row/card color that matches the normal (non-sheet) grouped rows. Sheets use the
+    /// lighter "elevated" gray in dark mode, so pin it to the base value there.
+    static let appCard = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 28 / 255, green: 28 / 255, blue: 30 / 255, alpha: 1)
+            : .secondarySystemGroupedBackground
+    })
+
+    /// Green for small text: darker in light mode so it meets contrast on white/grey backgrounds.
+    static let appleGreenText = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? .systemGreen
+            : UIColor(red: 0.0, green: 0.48, blue: 0.20, alpha: 1)
+    })
 
     init(hex: String) {
         let cleanHex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
@@ -95,6 +117,12 @@ public struct LiquidGlassModifier: ViewModifier {
 }
 
 public extension View {
+    /// Plain grouped card for content inside scrolling screens (glass is reserved for floating chrome).
+    func groupedCardBackground(cornerRadius: CGFloat = 20) -> some View {
+        background(Color(uiColor: .secondarySystemGroupedBackground),
+                   in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+    }
+
     func appleGlassBackground(cornerRadius: CGFloat = 20) -> some View {
         modifier(AppleGlassModifier(cornerRadius: cornerRadius))
     }

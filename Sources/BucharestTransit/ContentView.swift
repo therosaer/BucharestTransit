@@ -1,11 +1,34 @@
 import SwiftUI
 
+public enum AppearanceMode: String, CaseIterable, Identifiable {
+    case system, light, dark
+    public var id: String { rawValue }
+    public var title: String {
+        switch self {
+        case .system: return "Sistem"
+        case .light: return "Luminos"
+        case .dark: return "Întunecat"
+        }
+    }
+    public var colorScheme: ColorScheme? {
+        switch self {
+        case .system: return nil
+        case .light: return .light
+        case .dark: return .dark
+        }
+    }
+}
+
 public struct ContentView: View {
     @StateObject private var appState = AppState.shared
     @State private var dragX: CGFloat?
     @State private var showSettings = false
     @Environment(\.scenePhase) private var scenePhase
-    @AppStorage("dark_mode_enabled") private var darkModeEnabled = false
+    @AppStorage("appearance_mode") private var appearanceMode = AppearanceMode.system.rawValue
+
+    private var preferredScheme: ColorScheme? {
+        (AppearanceMode(rawValue: appearanceMode) ?? .system).colorScheme
+    }
 
     public init() {}
 
@@ -44,14 +67,21 @@ public struct ContentView: View {
         }
         .sheet(isPresented: $showSettings) {
             LayersSettingsView(appState: appState)
-                .preferredColorScheme(darkModeEnabled ? .dark : .light)
+                .presentationBackground(Color.appBackground)
+                .preferredColorScheme(preferredScheme)
         }
         .ignoresSafeArea(.keyboard)
         .onChange(of: appState.selectedTab) { _, _ in
             if appState.isMapSearchPresented { appState.closeMapSearch() }
         }
-        .preferredColorScheme(darkModeEnabled ? .dark : .light)
+        .preferredColorScheme(preferredScheme)
         .task {
+            // One-time migration from the old dark-mode toggle.
+            let defaults = UserDefaults.standard
+            if defaults.object(forKey: "appearance_mode") == nil,
+               defaults.bool(forKey: "dark_mode_enabled") {
+                appearanceMode = AppearanceMode.dark.rawValue
+            }
             await appState.loadInitialData()
             appState.setAppIsActive(scenePhase == .active)
         }
@@ -158,13 +188,10 @@ public struct ContentView: View {
                 }
             }
             .contentShape(Rectangle())
+            .sensoryFeedback(.selection, trigger: shownTab)
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
-                        let newTab = tab(at: value.location.x, itemWidth: itemWidth)
-                        if newTab != shownTab {
-                            HapticFeedback.trigger(.light)
-                        }
                         dragX = value.location.x
                     }
                     .onEnded { value in

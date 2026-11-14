@@ -11,7 +11,7 @@ public struct LineExplorerSheet: View {
             // Header
             HStack(spacing: 12) {
                 Text(line)
-                    .font(.system(size: 20, weight: .heavy, design: .rounded))
+                    .font(.system(.title3, design: .rounded, weight: .heavy))
                     .foregroundColor(.white)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 6)
@@ -19,11 +19,11 @@ public struct LineExplorerSheet: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Linia \(line) • \(appState.activeLineData?.typeName ?? "Tranzit")")
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.system(.callout, weight: .bold))
 
                     if let tur = appState.activeLineData?.turTerminal, let retur = appState.activeLineData?.returTerminal {
                         Text("Tur: → \(tur)\nRetur: → \(retur)")
-                            .font(.system(size: 11))
+                            .font(.caption2)
                             .foregroundColor(.secondary)
                             .lineLimit(2)
                     }
@@ -54,19 +54,19 @@ public struct LineExplorerSheet: View {
                                 ?? "Fără poziții live disponibile.",
                             systemImage: "clock"
                         )
-                        .font(.system(size: 12, weight: .medium))
+                        .font(.system(.caption, weight: .medium))
                         .foregroundStyle(.secondary)
 
                         Link(
                             "Program de circulație Metrorex",
                             destination: URL(string: "https://www.metrorex.ro/set-locale/ro/program-de-circulatie-in-zile-lucratoare")!
                         )
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.system(.caption2, weight: .medium))
                         Link(
                             "Program zile nelucrătoare",
                             destination: URL(string: "https://data.gov.ro/dataset/b5827288-dac1-4846-8712-b724fc51648a/resource/75d265c8-361d-448a-bdb6-c433d5e32864/download/program-de-circulaie-in-zile-nelucrtoare-si-sarbatori-legale.xml")!
                         )
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.system(.caption2, weight: .medium))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 18)
@@ -94,7 +94,7 @@ public struct LineExplorerSheet: View {
                             }
                         }
                     }
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.system(.caption, weight: .medium))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 18)
                 }
@@ -109,7 +109,7 @@ public struct LineExplorerSheet: View {
                     appState.filterOnRouteOnly = true
                 }) {
                     Text("📍 Pe Traseu (\(onRouteCount))")
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.system(.caption, weight: .semibold))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
                         .background(appState.filterOnRouteOnly ? Color.appleBlue : Color.secondary.opacity(0.15))
@@ -122,7 +122,7 @@ public struct LineExplorerSheet: View {
                     appState.filterOnRouteOnly = false
                 }) {
                     Text("Toate Alocate (\(totalCount))")
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.system(.caption, weight: .semibold))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
                         .background(!appState.filterOnRouteOnly ? Color.appleBlue : Color.secondary.opacity(0.15))
@@ -138,7 +138,7 @@ public struct LineExplorerSheet: View {
                 if !lineVehicles.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
                     Text("Vehicule pe Linie")
-                        .font(.system(size: 12, weight: .bold))
+                        .font(.system(.caption, weight: .bold))
                         .foregroundColor(.secondary)
                         .textCase(.uppercase)
                         .padding(.horizontal, 18)
@@ -156,7 +156,7 @@ public struct LineExplorerSheet: View {
                                             .frame(width: 8, height: 8)
 
                                         Text(v.label ?? v.id)
-                                            .font(.system(size: 12, weight: .bold))
+                                            .font(.system(.caption, weight: .bold))
                                             .foregroundColor(.primary)
 
                                         if let direction = v.directionLabel(
@@ -164,12 +164,12 @@ public struct LineExplorerSheet: View {
                                             returTerminal: appState.activeLineData?.returTerminal
                                         ) {
                                             Text(direction)
-                                                .font(.system(size: 11, weight: .semibold))
+                                                .font(.system(.caption2, weight: .semibold))
                                                 .foregroundColor(.secondary)
                                         }
 
                                         Text(v.displaySpeed)
-                                            .font(.system(size: 11))
+                                            .font(.caption2)
                                             .foregroundColor(.secondary)
                                     }
                                     .padding(.horizontal, 10)
@@ -187,7 +187,7 @@ public struct LineExplorerSheet: View {
                 if let stations = activeStations, !stations.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
                     Text("Stații (\(stations.count))")
-                        .font(.system(size: 12, weight: .bold))
+                        .font(.system(.caption, weight: .bold))
                         .foregroundColor(.secondary)
                         .textCase(.uppercase)
                         .padding(.horizontal, 18)
@@ -210,7 +210,7 @@ public struct LineExplorerSheet: View {
                                         .frame(width: 7, height: 7)
 
                                     Text(st.name)
-                                        .font(.system(size: 13, weight: .semibold))
+                                        .font(.system(.footnote, weight: .semibold))
                                         .foregroundColor(.primary)
 
                                     Spacer()
@@ -221,9 +221,9 @@ public struct LineExplorerSheet: View {
                                         : estimatedArrival(for: st) {
                                         HStack(spacing: 4) {
                                             Image(systemName: "clock.fill")
-                                                .font(.system(size: 10))
+                                                .font(.caption2)
                                             Text(eta)
-                                                .font(.system(size: 11, weight: .bold, design: .rounded))
+                                                .font(.system(.caption2, design: .rounded, weight: .bold))
                                         }
                                         .foregroundColor(eta.contains("În stație") ? .appleGreen : .appleBlue)
                                         .padding(.horizontal, 7)
@@ -231,7 +231,7 @@ public struct LineExplorerSheet: View {
                                         .background((eta.contains("În stație") ? Color.appleGreen : Color.appleBlue).opacity(0.12), in: Capsule())
                                     } else {
                                         Text("#\(idx + 1)")
-                                            .font(.system(size: 11))
+                                            .font(.caption2)
                                             .foregroundColor(.secondary)
                                     }
                                 }
@@ -246,13 +246,13 @@ public struct LineExplorerSheet: View {
                                 VStack(alignment: .leading, spacing: 4) {
                                     if !upcoming.isEmpty {
                                         Text("Următoarele plecări programate:")
-                                            .font(.system(size: 11, weight: .medium))
+                                            .font(.system(.caption2, weight: .medium))
                                             .foregroundColor(.secondary)
 
                                         HStack(spacing: 6) {
                                             ForEach(upcoming, id: \.time) { item in
                                                 Text(item.time)
-                                                    .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                                    .font(.system(.caption2, design: .monospaced, weight: .bold))
                                                     .foregroundColor(.appleBlue)
                                                     .padding(.horizontal, 7)
                                                     .padding(.vertical, 3)
@@ -262,7 +262,7 @@ public struct LineExplorerSheet: View {
                                     }
                                     if !st.todayDepartures.isEmpty {
                                         Text("Total: \(st.todayDepartures.count) plecări azi (orar oficial GTFS)")
-                                            .font(.system(size: 10))
+                                            .font(.caption2)
                                             .foregroundColor(.secondary)
                                             .padding(.top, 2)
                                     }

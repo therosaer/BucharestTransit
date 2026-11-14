@@ -478,11 +478,13 @@ public actor TransitAPIService {
     }
 
     private static func stableDeviceUuid() -> String {
-        let key = "stb_bilet_device_uuid"
+        // The official (Capacitor) app sends the plain device UUID. A prefixed value
+        // is not a valid UUID and can make the backend answer HTTP 500.
+        let key = "stb_bilet_device_uuid_v2"
         if let existing = UserDefaults.standard.string(forKey: key) {
             return existing
         }
-        let generated = "ios-stb-native-\(UUID().uuidString)"
+        let generated = UUID().uuidString
         UserDefaults.standard.set(generated, forKey: key)
         return generated
     }

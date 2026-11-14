@@ -12,16 +12,20 @@ public struct LayersSettingsView: View {
     @AppStorage("layer_stations") private var layerStations = true
     @AppStorage("layer_depots") private var layerDepots = true
     @AppStorage("layer_dedicated_lanes") private var layerDedicatedLanes = true
-    @AppStorage("dark_mode_enabled") private var darkModeEnabled = false
+    @AppStorage("appearance_mode") private var appearanceMode = AppearanceMode.system.rawValue
 
     public var body: some View {
         NavigationStack {
-            List {
+            Form {
                 Section("Aspect") {
-                    Toggle(isOn: $darkModeEnabled) {
-                        Label("Mod întunecat", systemImage: darkModeEnabled ? "moon.fill" : "sun.max.fill")
+                    Picker("Temă", selection: $appearanceMode) {
+                        ForEach(AppearanceMode.allCases) { mode in
+                            Text(mode.title).tag(mode.rawValue)
+                        }
                     }
+                    .pickerStyle(.segmented)
                 }
+                .listRowBackground(Color.appCard)
 
                 Section("Hartă") {
                     NavigationLink {
@@ -30,6 +34,7 @@ public struct LayersSettingsView: View {
                         Label("Setări hartă", systemImage: "map")
                     }
                 }
+                .listRowBackground(Color.appCard)
 
                 Section("Straturi Hartă Live") {
                     Toggle(isOn: $layerTrams) {
@@ -57,25 +62,25 @@ public struct LayersSettingsView: View {
                         Label("Benzi dedicate", systemImage: "arrow.trianglehead.branch")
                     }
                 }
+                .listRowBackground(Color.appCard)
 
-                Section("Filtrare & Optimizare") {
+                Section {
                     Toggle("Doar vehicule în serviciu pe traseu", isOn: $appState.filterOnRouteOnly)
-                    Text("Ascunde automat vehiculele aflate în probe, la garaj sau în retragere.")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
                     Toggle("Ascunde vehiculele cu GPS vechi", isOn: $hideStaleVehicles)
-                    Text("Ascunde vehiculele cu poziții GPS mai vechi de 2 minute sau provenite dintr-o copie offline.")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
+                } header: {
+                    Text("Filtrare & Optimizare")
+                } footer: {
+                    Text("Primul comutator ascunde vehiculele aflate în probe, la garaj sau în retragere. Al doilea ascunde pozițiile GPS mai vechi de 2 minute sau provenite dintr-o copie offline.")
                 }
+                .listRowBackground(Color.appCard)
 
-                Section("Mod Conexiune API") {
+                Section {
                     HStack {
                         Label("Tranzit Live", systemImage: "antenna.radiowaves.left.and.right")
                         Spacer()
                         Text("mo-bi.ro Direct")
                         .font(.subheadline.weight(.semibold))
-                            .foregroundColor(Color.appleGreen)
+                            .foregroundStyle(Color.appleGreenText)
                     }
                     HStack {
                         Label("Ticketing & Bilete", systemImage: "ticket.fill")
@@ -99,20 +104,23 @@ public struct LayersSettingsView: View {
                             Text("Reîmprospătează Datele Live")
                         }
                     }
+                } header: {
+                    Text("Mod Conexiune API")
+                } footer: {
                     Text("Aplicația rulează 100% autonom pe telefon, conectându-se direct la serverele oficiale STB fără să necesite un server desktop.")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
                 }
+                .listRowBackground(Color.appCard)
 
                 Section("Despre Aplicație") {
-                    LabeledContent("Versiune", value: "2026.10 • Apple Design Edition")
+                    LabeledContent("Versiune", value: "V1.3.1")
                     LabeledContent("Sursă Date Live", value: "TPBI • mo-bi.ro Open Data")
                     LabeledContent("Integrare Bilete", value: "STB SA Bilet TB Oficial")
                     LabeledContent("Arhitectură", value: "SwiftUI + MapKit (xtool)")
                 }
+                .listRowBackground(Color.appCard)
             }
-            .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
+            .background(Color.appBackground)
             .navigationTitle("Straturi și Setări")
         }
     }

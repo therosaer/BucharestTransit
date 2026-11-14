@@ -73,6 +73,8 @@ public struct TransitMapView: View {
             if let v = appState.selectedVehicle {
                 VehicleInspectorSheet(appState: appState, vehicle: v)
                     .presentationDetents([.fraction(0.35), .medium])
+                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                    .presentationBackground(.regularMaterial)
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(28)
             }
@@ -91,6 +93,7 @@ public struct TransitMapView: View {
                     .presentationDetents([.height(120), .fraction(0.42), .large], selection: $lineExplorerDetent)
                     .presentationContentInteraction(.resizes)
                     .presentationBackgroundInteraction(.enabled(upThrough: .height(120)))
+                    .presentationBackground(.regularMaterial)
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(28)
                     .interactiveDismissDisabled()
@@ -103,6 +106,8 @@ public struct TransitMapView: View {
             if let stop = appState.selectedStop {
                 StopInspectorSheet(appState: appState, stop: stop)
                     .presentationDetents([.fraction(0.4), .medium, .large])
+                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                    .presentationBackground(.regularMaterial)
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(28)
             }
@@ -177,7 +182,8 @@ private struct ActionButton: View {
             Image(systemName: icon)
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(color)
-                .frame(width: 38, height: 38)
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
                 .rotationEffect(Angle(degrees: isSpinning ? 360 : 0))
                 .animation(isSpinning ? .linear(duration: 0.8).repeatForever(autoreverses: false) : .default, value: isSpinning)
         }

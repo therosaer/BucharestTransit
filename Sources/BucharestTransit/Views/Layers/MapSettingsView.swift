@@ -23,17 +23,22 @@ struct MapSettingsView: View {
             } footer: {
                 Text("Stilurile hărții nu necesită cheie API. Alege Satelit pentru imagini aeriene.")
             }
+            .listRowBackground(Color.appCard)
 
             Section("Stil selectat") {
                 Label(selectedStyle.title, systemImage: selectedStyle.symbol)
             }
+            .listRowBackground(Color.appCard)
 
             Section {
                 Toggle("Afișează stațiile în locul vehiculelor", isOn: $showStopsInsteadOfVehicles)
             } footer: {
                 Text("Atinge o stație de pe hartă pentru a vedea liniile care o deservesc și următoarele plecări.")
             }
+            .listRowBackground(Color.appCard)
         }
+        .scrollContentBackground(.hidden)
+        .background(Color.appBackground)
         .navigationTitle("Setări hartă")
         .navigationBarTitleDisplayMode(.inline)
     }
