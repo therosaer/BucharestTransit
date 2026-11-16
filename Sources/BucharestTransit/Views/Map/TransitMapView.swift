@@ -8,6 +8,7 @@ import _MapKit_SwiftUI
 public struct TransitMapView: View {
     @ObservedObject var appState: AppState
     @AppStorage("map_hide_stale_vehicles") private var hideStaleVehicles = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var lineExplorerDetent: PresentationDetent = .fraction(0.42)
 
     public var body: some View {
@@ -27,6 +28,8 @@ public struct TransitMapView: View {
                 }
             )
             .ignoresSafeArea()
+            .accessibilityLabel("Hartă cu vehiculele în timp real")
+            .accessibilityHint("Caută o linie sau deschide Linii pentru a vedea vehiculele într-o listă")
             .zIndex(0)
 
             // MARK: - Top Floating UI (Search, toggled from the dock)
@@ -38,35 +41,16 @@ public struct TransitMapView: View {
                         .transition(.move(edge: .top).combined(with: .opacity))
                 } else {
                     HStack {
-                        Spacer()
                         TicketCountdownPill(appState: appState)
+                        Spacer()
                     }
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
                     .transition(.opacity)
                 }
             }
-            .animation(.bouncy(duration: 0.45), value: appState.isMapSearchPresented)
+            .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: appState.isMapSearchPresented)
             .zIndex(10)
-
-            // MARK: - Floating Apple Action Dock (Locate, Sync, Theme)
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    if appState.showLineExplorer {
-                        ActionButton(icon: "xmark", color: .secondary) {
-                            HapticFeedback.trigger(.light)
-                            appState.clearLineSelection()
-                        }
-                        .frame(width: 52, height: 52)
-                        .nativeGlass(in: Circle())
-                        .accessibilityLabel("Închide traseul")
-                        .padding(.trailing, 84)
-                        .padding(.bottom, 96)
-                    }
-                }
-            }
         }
         // Vehicle Inspector Bottom Sheet
         .sheet(isPresented: $appState.showVehicleInspector) {
@@ -88,11 +72,11 @@ public struct TransitMapView: View {
                 LineExplorerSheet(
                     appState: appState,
                     line: line,
-                    isCompact: lineExplorerDetent == .height(120)
+                    isCompact: lineExplorerDetent == .height(92)
                 )
-                    .presentationDetents([.height(120), .fraction(0.42), .large], selection: $lineExplorerDetent)
+                    .presentationDetents([.height(92), .fraction(0.42), .large], selection: $lineExplorerDetent)
                     .presentationContentInteraction(.resizes)
-                    .presentationBackgroundInteraction(.enabled(upThrough: .height(120)))
+                    .presentationBackgroundInteraction(.enabled(upThrough: .height(92)))
                     .presentationBackground(.regularMaterial)
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(28)
@@ -168,24 +152,5 @@ public struct TransitMapView: View {
 
         // Leaflet renders up to 350 vehicles at fluid 60/120 FPS
         return Array(vehicles.prefix(350))
-    }
-}
-
-private struct ActionButton: View {
-    let icon: String
-    let color: Color
-    var isSpinning: Bool = false
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Image(systemName: icon)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(color)
-                .frame(width: 44, height: 44)
-                .contentShape(Rectangle())
-                .rotationEffect(Angle(degrees: isSpinning ? 360 : 0))
-                .animation(isSpinning ? .linear(duration: 0.8).repeatForever(autoreverses: false) : .default, value: isSpinning)
-        }
     }
 }

@@ -8,13 +8,12 @@ struct StopInspectorSheet: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("STAȚIE")
-                        .font(.system(.caption2, weight: .bold))
+                    Text("Stație")
+                        .font(.footnote)
                         .foregroundColor(.secondary)
-                        .textCase(.uppercase)
 
                     Text(stop.name)
-                        .font(.system(.title3, design: .rounded, weight: .bold))
+                        .font(.title3.weight(.semibold))
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
@@ -24,8 +23,9 @@ struct StopInspectorSheet: View {
                     appState.dismissStopInspector()
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 24))
+                        .font(.title2)
                         .foregroundColor(.secondary.opacity(0.8))
+                        .frame(minWidth: 44, minHeight: 44)
                 }
                 .accessibilityLabel("Închide")
             }
@@ -36,9 +36,8 @@ struct StopInspectorSheet: View {
             }
 
             Text("Linii și următoarele plecări")
-                .font(.system(.caption, weight: .bold))
+                .font(.footnote)
                 .foregroundColor(.secondary)
-                .textCase(.uppercase)
 
             ScrollView {
                 LazyVStack(spacing: 10) {
@@ -56,9 +55,8 @@ struct StopInspectorSheet: View {
     private func metroFacilitiesView(_ facilities: MetroFacilities) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Facilități (GTFS)")
-                .font(.system(.caption, weight: .bold))
+                .font(.footnote)
                 .foregroundColor(.secondary)
-                .textCase(.uppercase)
 
             if !facilities.entrances.isEmpty {
                 Label(
@@ -112,11 +110,7 @@ struct StopInspectorSheet: View {
             appState.selectStopService(service)
         } label: {
             HStack(alignment: .top, spacing: 12) {
-                Text(service.line)
-                    .font(.system(.subheadline, design: .rounded, weight: .heavy))
-                    .foregroundColor(.white)
-                    .frame(minWidth: 42, minHeight: 32)
-                    .background(color, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                LinePlate(line: service.line, color: color)
 
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {

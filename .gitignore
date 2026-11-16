@@ -20,3 +20,12 @@ DerivedData/
 
 /xtool
 .bsp/
+
+# Build and install artifacts
+*.ipa
+*.app/
+*.app
+*.dSYM/
+*.xcarchive/
+Payload/
+/xtool/

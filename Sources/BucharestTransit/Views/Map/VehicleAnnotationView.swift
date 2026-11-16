@@ -26,17 +26,17 @@ public struct VehicleAnnotationView: View {
                         RoundedRectangle(cornerRadius: 7, style: .continuous)
                             .stroke(isSelected ? Color.white : Color.white.opacity(0.9), lineWidth: isSelected ? 2.5 : 1.5)
                     )
-                    .shadow(color: Color.black.opacity(0.35), radius: isSelected ? 6 : 3, x: 0, y: 2)
+                    .shadow(color: Color.black.opacity(0.25), radius: isSelected ? 3 : 1.5, x: 0, y: 1)
 
                 // Line Label
                 Text(vehicle.line)
-                    .font(.system(size: 10, weight: .heavy, design: .rounded))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundColor(.white)
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
             }
             .scaleEffect(isSelected ? 1.25 : 1.0)
-            .animation(.spring(response: 0.25, dampingFraction: 0.7), value: isSelected)
+            .animation(.smooth(duration: 0.2), value: isSelected)
 
             // Heading pointer if moving
             if let bearing = vehicle.bearing, let speed = vehicle.speed, speed > 3 {

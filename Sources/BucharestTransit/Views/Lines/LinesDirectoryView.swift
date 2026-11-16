@@ -18,72 +18,111 @@ public struct LinesDirectoryView: View {
                             ForEach(RouteCategory.allCases) { category in
                                 let isSelected = selectedCategory == category
                                 Button {
-                                    HapticFeedback.trigger(.light)
                                     selectedCategory = category
                                 } label: {
-                                    Label(category.title, systemImage: category.symbol)
+                                    Text(category.title)
                                         .font(.subheadline.weight(isSelected ? .semibold : .regular))
-                                        .foregroundStyle(isSelected ? Color.white : Color.primary)
-                                        .padding(.horizontal, 12)
-                                        .padding(.vertical, 8)
+                                        .foregroundStyle(isSelected ? Color(uiColor: .systemBackground) : Color.primary)
+                                        .padding(.horizontal, 14)
+                                        .frame(height: 32)
                                         .background {
                                             Capsule()
-                                                .fill(isSelected ? Color.appleBlue : Color(uiColor: .tertiarySystemGroupedBackground))
+                                                .fill(isSelected ? Color.primary : Color(uiColor: .tertiarySystemGroupedBackground))
                                         }
                                 }
                                 .buttonStyle(.plain)
+                                .accessibilityAddTraits(isSelected ? .isSelected : [])
                             }
                         }
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, 16)
                     }
-                    .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                    .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                 }
 
-                Section {
-                    ForEach(filteredRoutes) { route in
-                        Button {
-                            HapticFeedback.trigger(.medium)
-                            appState.selectLine(route.line)
-                            appState.selectedTab = .map
-                        } label: {
-                            HStack(spacing: 12) {
-                                Text(route.line)
-                                    .font(.headline.weight(.bold))
-                                    .foregroundStyle(.white)
-                                    .frame(minWidth: 48, minHeight: 36)
-                                    .background(
-                                        Color(hex: route.hexColor),
-                                        in: RoundedRectangle(cornerRadius: 9, style: .continuous)
-                                    )
-
-                                VStack(alignment: .leading, spacing: 3) {
-                                    Text(route.typeName ?? "Tranzit")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.primary)
-                                    Text(route.activeVehicles > 0 ? activeVehicleDescription(for: route) : "Fără vehicule active")
-                                        .font(.caption)
-                                        .foregroundStyle(route.activeVehicles > 0 ? Color.appleBlue : Color.secondary)
-                                }
-
-                                Spacer(minLength: 8)
-
-                                Image(systemName: "chevron.right")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(.tertiary)
-                            }
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
+                if !favoriteRoutes.isEmpty {
+                    Section("Favorite") {
+                        ForEach(favoriteRoutes) { route in routeRow(route) }
                     }
+                }
+
+                Section {
+                    ForEach(filteredRoutes) { route in routeRow(route) }
                 } header: {
-                    Text("Linii · \(filteredRoutes.count)")
+                    Text("\(filteredRoutes.count) linii")
+                        .textCase(nil)
                 }
             }
             .listStyle(.insetGrouped)
-            .listRowSpacing(6)
-            .navigationTitle("Catalog Linii")
-            .searchable(text: $filterText, prompt: "Caută linie (ex. 41, 104, 381)...")
+            .navigationTitle("Linii")
+            .searchable(text: $filterText, prompt: "Caută linie")
+            .sensoryFeedback(.selection, trigger: selectedCategory)
+            .overlay {
+                if filteredRoutes.isEmpty && !appState.routes.isEmpty {
+                    if filterText.isEmpty {
+                        ContentUnavailableView("Nicio linie", systemImage: "bus", description: Text("Nu există linii în această categorie."))
+                    } else {
+                        ContentUnavailableView.search(text: filterText)
+                    }
+                }
+            }
+        }
+    }
+
+    private var favoriteRoutes: [Route] {
+        guard filterText.isEmpty, selectedCategory == .all else { return [] }
+        return appState.routes.filter { appState.favoriteLines.contains($0.line) }
+    }
+
+    private func routeRow(_ route: Route) -> some View {
+        let isFavorite = appState.favoriteLines.contains(route.line)
+        return Button {
+            appState.selectLine(route.line)
+            appState.selectedTab = .map
+        } label: {
+            HStack(spacing: 12) {
+                LinePlate(line: route.line, color: Color(hex: route.hexColor))
+                    .frame(width: 56, alignment: .leading)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(routeTitle(for: route))
+                        .font(.body)
+                        .foregroundStyle(.primary)
+                        .lineLimit(2)
+                    Text(statusText(for: route))
+                        .font(.footnote)
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer(minLength: 8)
+
+                if route.activeVehicles > 0 {
+                    Circle()
+                        .fill(Color.appleGreen)
+                        .frame(width: 6, height: 6)
+                        .accessibilityHidden(true)
+                }
+            }
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .swipeActions(edge: .leading) {
+            Button {
+                appState.toggleFavorite(route.line)
+            } label: {
+                Label(isFavorite ? "Elimină" : "Favorită", systemImage: isFavorite ? "star.slash" : "star")
+            }
+            .tint(.orange)
+        }
+        .contextMenu {
+            Button {
+                appState.toggleFavorite(route.line)
+            } label: {
+                Label(isFavorite ? "Elimină din favorite" : "Adaugă la favorite", systemImage: isFavorite ? "star.slash" : "star")
+            }
         }
     }
 
@@ -108,11 +147,19 @@ public struct LinesDirectoryView: View {
         }
     }
 
-    private func activeVehicleDescription(for route: Route) -> String {
+    private func routeTitle(for route: Route) -> String {
+        if let t = route.terminals, t.count >= 2, let first = t.first, let last = t.last {
+            return "\(first) – \(last)"
+        }
+        return route.typeName ?? "Tranzit"
+    }
+
+    private func statusText(for route: Route) -> String {
+        guard route.activeVehicles > 0 else { return "Fără vehicule active" }
         if route.line.uppercased().hasPrefix("M") {
             return "\(route.activeVehicles) poziții live"
         }
-        return "\(route.activeVehicles) active"
+        return route.activeVehicles == 1 ? "1 vehicul în circulație" : "\(route.activeVehicles) vehicule în circulație"
     }
 }
 

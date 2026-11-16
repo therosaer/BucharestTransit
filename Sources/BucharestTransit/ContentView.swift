@@ -24,6 +24,7 @@ public struct ContentView: View {
     @State private var dragX: CGFloat?
     @State private var showSettings = false
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage("appearance_mode") private var appearanceMode = AppearanceMode.system.rawValue
 
     private var preferredScheme: ColorScheme? {
@@ -34,43 +35,52 @@ public struct ContentView: View {
 
     public var body: some View {
         ZStack(alignment: .bottom) {
-            // Main Tab Content
             Group {
                 switch appState.selectedTab {
                 case .map:
                     TransitMapView(appState: appState)
+                        .overlay(alignment: .topTrailing) {
+                            CircleGlassButton(systemImage: "gearshape", label: "Setări") {
+                                showSettings = true
+                            }
+                            .padding(.trailing, 16)
+                            .padding(.top, 8)
+                        }
                 case .lines:
                     LinesDirectoryView(appState: appState)
                         .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 72) }
                 case .tickets:
                     TicketsView(appState: appState)
                         .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 72) }
-                case .stats:
-                    TransitPulseView(appState: appState)
-                        .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 72) }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            // Floating Liquid Glass Bottom Bar
-            liquidGlassBottomBar
-                .padding(.horizontal, 16)
-                .padding(.bottom, 10)
-        }
-        .overlay(alignment: .topTrailing) {
-            if appState.selectedTab == .map {
-                settingsButton
-                    .padding(.trailing, 16)
-                    .padding(.top, 8)
-                    .transition(.scale(scale: 0.6).combined(with: .opacity))
+            // Floating liquid glass tab selector
+            NativeGlassContainer(spacing: 12) {
+                HStack(alignment: .bottom, spacing: 12) {
+                    tabPill
+                        .frame(maxWidth: .infinity)
+                    if appState.selectedTab == .map {
+                        VStack(spacing: 12) {
+                            locateButton
+                            searchButton
+                        }
+                        .transition(.scale(scale: 0.8).combined(with: .opacity))
+                    }
+                }
             }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 10)
+            .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: appState.selectedTab)
         }
+        .sensoryFeedback(.selection, trigger: appState.selectedTab)
+        .ignoresSafeArea(.keyboard)
         .sheet(isPresented: $showSettings) {
             LayersSettingsView(appState: appState)
                 .presentationBackground(Color.appBackground)
                 .preferredColorScheme(preferredScheme)
         }
-        .ignoresSafeArea(.keyboard)
         .onChange(of: appState.selectedTab) { _, _ in
             if appState.isMapSearchPresented { appState.closeMapSearch() }
         }
@@ -90,78 +100,7 @@ public struct ContentView: View {
         }
     }
 
-    // MARK: - Liquid Glass Dock
-    private var liquidGlassBottomBar: some View {
-        NativeGlassContainer(spacing: 12) {
-            HStack(alignment: .bottom, spacing: 12) {
-                tabPill
-                    .frame(maxWidth: .infinity)
-                if appState.selectedTab == .map {
-                    VStack(spacing: 10) {
-                        locateButton
-                        mapSearchButton
-                    }
-                    .transition(.scale(scale: 0.6).combined(with: .opacity))
-                }
-            }
-        }
-        .padding(.horizontal, 12)
-        .animation(.bouncy(duration: 0.4), value: appState.selectedTab)
-    }
-
-    private var locateButton: some View {
-        Button {
-            HapticFeedback.trigger(.medium)
-            appState.locateTrigger += 1
-        } label: {
-            Image(systemName: "location.fill")
-                .font(.title3.weight(.semibold))
-                .foregroundColor(Color.appleBlue)
-                .frame(width: 56, height: 56)
-                .contentShape(Circle())
-        }
-        .buttonStyle(.plain)
-        .nativeGlass(in: Circle())
-        .accessibilityLabel("Localizează-mă")
-    }
-
-    private var settingsButton: some View {
-        Button {
-            HapticFeedback.trigger(.light)
-            showSettings = true
-        } label: {
-            Image(systemName: "gearshape.fill")
-                .font(.title3.weight(.semibold))
-                .foregroundColor(Color.primary)
-                .frame(width: 56, height: 56)
-                .contentShape(Circle())
-        }
-        .buttonStyle(.plain)
-        .nativeGlass(in: Circle())
-        .accessibilityLabel("Setări")
-    }
-
-    private var mapSearchButton: some View {
-        Button {
-            HapticFeedback.trigger(.light)
-            withAnimation(.bouncy(duration: 0.45)) {
-                if appState.isMapSearchPresented {
-                    appState.closeMapSearch()
-                } else {
-                    appState.isMapSearchPresented = true
-                }
-            }
-        } label: {
-            Image(systemName: appState.isMapSearchPresented ? "xmark" : "magnifyingglass")
-                .font(.title3.weight(.semibold))
-                .foregroundColor(Color.primary)
-                .frame(width: 56, height: 56)
-                .contentShape(Circle())
-        }
-        .buttonStyle(.plain)
-        .nativeGlass(in: Circle())
-        .accessibilityLabel(appState.isMapSearchPresented ? "Închide căutarea" : "Caută")
-    }
+    // MARK: - Tab selector
 
     /// Glass pill with a draggable glass selector: drag it across tabs, or tap a tab to jump to it.
     private var tabPill: some View {
@@ -178,17 +117,19 @@ public struct ContentView: View {
                     .frame(width: itemWidth, height: geo.size.height)
                     .nativeGlass(in: Capsule())
                     .offset(x: indicatorX, y: 0)
-                    .animation(dragX == nil ? .bouncy(duration: 0.4) : .interactiveSpring(), value: indicatorX)
+                    .animation(dragX == nil && !reduceMotion ? .smooth(duration: 0.3) : nil, value: indicatorX)
 
                 HStack(spacing: 0) {
                     ForEach(tabs) { tab in
                         tabLabel(tab, isSelected: tab == shownTab)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .accessibilityElement(children: .combine)
+                            .accessibilityAddTraits(tab == appState.selectedTab ? [.isButton, .isSelected] : .isButton)
+                            .accessibilityAction { appState.selectedTab = tab }
                     }
                 }
             }
             .contentShape(Rectangle())
-            .sensoryFeedback(.selection, trigger: shownTab)
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
@@ -196,7 +137,7 @@ public struct ContentView: View {
                     }
                     .onEnded { value in
                         let tab = tab(at: value.location.x, itemWidth: itemWidth)
-                        withAnimation(.bouncy(duration: 0.4)) {
+                        withAnimation(reduceMotion ? nil : .smooth(duration: 0.3)) {
                             appState.selectedTab = tab
                             dragX = nil
                         }
@@ -218,23 +159,46 @@ public struct ContentView: View {
         VStack(spacing: 3) {
             ZStack(alignment: .topTrailing) {
                 Image(systemName: tab.systemImage)
-                    .font(isSelected ? .title3.weight(.semibold) : .body.weight(.medium))
+                    .font(.body.weight(.medium))
                     .frame(height: 22)
 
-                // Active Tickets Red Dot Indicator
                 if tab == .tickets && appState.biletActiveTickets.count > 0 {
                     Circle()
-                        .fill(Color.appleRed)
-                        .frame(width: 7, height: 7)
+                        .fill(Color.appleGreen)
+                        .frame(width: 6, height: 6)
                         .offset(x: 5, y: -2)
+                        .accessibilityHidden(true)
                 }
             }
 
             Text(tab.title)
-                .font(.caption.weight(isSelected ? .bold : .medium))
+                .font(.caption2.weight(isSelected ? .semibold : .medium))
                 .lineLimit(1)
         }
-        .foregroundColor(isSelected ? Color.appleBlue : Color.secondary)
+        .foregroundStyle(isSelected ? Color.appleBlue : Color.secondary)
         .contentShape(Rectangle())
+    }
+
+    // MARK: - Map controls
+
+    private var locateButton: some View {
+        CircleGlassButton(systemImage: "location.fill", label: "Localizează-mă", tint: .appleBlue) {
+            appState.locateTrigger += 1
+        }
+    }
+
+    private var searchButton: some View {
+        CircleGlassButton(
+            systemImage: appState.isMapSearchPresented ? "xmark" : "magnifyingglass",
+            label: appState.isMapSearchPresented ? "Închide căutarea" : "Caută"
+        ) {
+            withAnimation(reduceMotion ? nil : .smooth(duration: 0.3)) {
+                if appState.isMapSearchPresented {
+                    appState.closeMapSearch()
+                } else {
+                    appState.isMapSearchPresented = true
+                }
+            }
+        }
     }
 }

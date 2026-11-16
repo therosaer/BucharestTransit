@@ -466,7 +466,7 @@ public struct OpenStreetMapView: UIViewRepresentable {
               background: #15191e;
             }
             html.dark-map[data-map-style='standard'] .leaflet-tile {
-              filter: brightness(0.82) invert(1) hue-rotate(180deg) saturate(0.72);
+              filter: brightness(0.82) invert(1) hue-rotate(180deg) saturate(0.3);
             }
             
             .vehicle-marker {
@@ -477,29 +477,34 @@ public struct OpenStreetMapView: UIViewRepresentable {
               cursor: pointer;
             }
             .vehicle-pin {
-              padding: 2.5px 7px;
-              border-radius: 7px;
+              min-width: 28px;
+              padding: 2px 6px;
+              border-radius: 6px;
               font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
               font-size: 11px;
-              font-weight: 800;
+              font-weight: 600;
+              font-variant-numeric: tabular-nums;
               color: #ffffff;
-              box-shadow: 0 3px 8px rgba(0,0,0,0.32), 0 0 0 1.5px rgba(255,255,255,0.95);
-              letter-spacing: -0.02em;
+              box-shadow: 0 0 0 1px rgba(255,255,255,0.85), 0 1px 3px rgba(0,0,0,0.28);
               white-space: nowrap;
               text-align: center;
+              transition: transform 0.18s cubic-bezier(0.2, 0, 0, 1), opacity 0.18s ease;
             }
             .vehicle-pin.selected {
-              transform: scale(1.22);
-              box-shadow: 0 5px 14px rgba(0,0,0,0.45), 0 0 0 2.5px #ffffff, 0 0 12px rgba(0,122,255,0.8);
+              transform: scale(1.18);
+              box-shadow: 0 0 0 2px #ffffff, 0 2px 6px rgba(0,0,0,0.35);
             }
             .vehicle-pin.crowded-high {
-              box-shadow: 0 0 0 3px rgba(255,59,48,0.9), 0 3px 8px rgba(0,0,0,0.32);
+              box-shadow: 0 0 0 2px rgba(255,59,48,0.9), 0 1px 3px rgba(0,0,0,0.28);
             }
             .vehicle-pin.crowded-mod {
-              box-shadow: 0 0 0 2px rgba(255,149,0,0.85), 0 3px 8px rgba(0,0,0,0.32);
+              box-shadow: 0 0 0 2px rgba(255,149,0,0.85), 0 1px 3px rgba(0,0,0,0.28);
             }
             .vehicle-pin.stale {
               opacity: 0.55;
+            }
+            @media (prefers-reduced-motion: reduce) {
+              .vehicle-pin { transition: none; }
             }
             .vehicle-pointer {
               width: 0;
@@ -535,9 +540,9 @@ public struct OpenStreetMapView: UIViewRepresentable {
               justify-content: center;
               border: 2.5px solid #ffffff;
               border-radius: 50%;
-              box-shadow: 0 2px 7px rgba(0,0,0,0.35);
+              box-shadow: 0 1px 3px rgba(0,0,0,0.3);
               color: #ffffff;
-              font: 700 13px -apple-system, BlinkMacSystemFont, sans-serif;
+              font: 600 13px -apple-system, BlinkMacSystemFont, sans-serif;
               cursor: pointer;
             }
             .apple-station-popup .leaflet-popup-content-wrapper {
@@ -942,14 +947,28 @@ public struct OpenStreetMapView: UIViewRepresentable {
           }
         }
 
+        function darkenForWhite(hex) {
+          var h = hex.replace('#', '');
+          var rgb = [0, 2, 4].map(function(i) { return parseInt(h.substr(i, 2), 16); });
+          function lum(k) {
+            var c = rgb.map(function(v) {
+              v = (v * k) / 255;
+              return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+            });
+            return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+          }
+          var k = 1;
+          while (k > 0.3 && 1.05 / (lum(k) + 0.05) < 4.5) { k -= 0.03; }
+          return 'rgb(' + rgb.map(function(v) { return Math.round(v * k); }).join(',') + ')';
+        }
+
         function createMarkerHtml(v, isSelected) {
           var color = getPinColor(v.type);
           var selClass = isSelected ? ' selected' : '';
           var crowdClass = v.crowded === 'high' ? ' crowded-high' : (v.crowded === 'moderate' ? ' crowded-mod' : '');
           var staleClass = v.stale ? ' stale' : '';
           return '<div class="vehicle-marker">' +
-                   '<div class="vehicle-pin' + selClass + crowdClass + staleClass + '" style="background:' + color + ';">' + v.line + '</div>' +
-                   '<div class="vehicle-pointer" style="color:' + color + ';"></div>' +
+                   '<div class="vehicle-pin' + selClass + crowdClass + staleClass + '" style="background:' + darkenForWhite(color) + ';">' + v.line + '</div>' +
                  '</div>';
         }
 
@@ -1018,7 +1037,7 @@ public struct OpenStreetMapView: UIViewRepresentable {
 
         function createStationPopupHtml(st, lineName, lineColor, data) {
           var color = lineColor || '#007AFF';
-          var lineBadge = lineName ? '<span style="background:' + color + '; color:#fff; font-size:11px; font-weight:800; padding:2px 7px; border-radius:6px; margin-right:6px;">' + lineName + '</span>' : '';
+          var lineBadge = lineName ? '<span style="background:' + color + '; color:#fff; font-size:11px; font-weight:600; padding:2px 7px; border-radius:6px; margin-right:6px;">' + lineName + '</span>' : '';
           
           var bodyHtml = '';
           var hasLiveNear = data.liveClose && data.liveClose.distKm < 0.25;
@@ -1026,7 +1045,7 @@ public struct OpenStreetMapView: UIViewRepresentable {
           if (hasLiveNear) {
             bodyHtml += '<div style="margin-top:8px; display:flex; align-items:center; justify-content:space-between; background:rgba(52,199,89,0.12); padding:8px 10px; border-radius:10px; border:1px solid rgba(52,199,89,0.25);">' +
                           '<div>' +
-                            '<div style="font-size:14px; font-weight:800; color:#34C759;">🟢 Sosește acum în stație</div>' +
+                            '<div style="font-size:14px; font-weight:600; color:#1f8a3f;">Sosește acum în stație</div>' +
                             '<div style="font-size:10px; color:#555; margin-top:1px;">Vehicul detectat prin GPS la <strong>' + Math.round(data.liveClose.distKm * 1000) + ' m</strong></div>' +
                           '</div>' +
                         '</div>';
@@ -1036,8 +1055,8 @@ public struct OpenStreetMapView: UIViewRepresentable {
             
             bodyHtml += '<div style="margin-top:8px; background:rgba(0,122,255,0.08); padding:8px 10px; border-radius:10px; border:1px solid rgba(0,122,255,0.18);">' +
                           '<div style="display:flex; justify-content:space-between; align-items:center;">' +
-                            '<div style="font-size:14px; font-weight:800; color:#007AFF;">⏱️ ' + timeTitle + '</div>' +
-                            '<span style="font-size:9px; font-weight:700; color:#555; background:rgba(255,255,255,0.85); padding:2px 6px; border-radius:4px;">ORAR OFICIAL</span>' +
+                            '<div style="font-size:14px; font-weight:600; color:#007AFF;">' + timeTitle + '</div>' +
+                            '<span style="font-size:9px; font-weight:700; color:#555; background:rgba(255,255,255,0.85); padding:2px 6px; border-radius:4px;">Orar oficial</span>' +
                           '</div>';
 
             if (data.upcoming.length > 1) {
@@ -1062,7 +1081,7 @@ public struct OpenStreetMapView: UIViewRepresentable {
           var totalInfo = data.totalToday > 0 ? '<div style="margin-top:6px; font-size:10px; color:#888; text-align:right;">Orar ' + dayTypeStr + ' • ' + data.totalToday + ' curse/zi</div>' : '';
 
           return '<div style="min-width:210px; max-width:270px; padding:2px 0; font-family:-apple-system, BlinkMacSystemFont, system-ui, sans-serif;">' +
-                   '<div style="font-size:10px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px;">STAȚIE TRANZIT</div>' +
+                   '<div style="font-size:11px; font-weight:500; color:#6e6e73; margin-bottom:3px;">Stație</div>' +
                    '<div style="display:flex; align-items:center;">' +
                      lineBadge +
                      '<strong style="font-size:14px; color:#111; font-weight:700;">' + st.name + '</strong>' +

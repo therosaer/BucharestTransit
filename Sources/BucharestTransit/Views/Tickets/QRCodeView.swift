@@ -18,7 +18,7 @@ public struct QRCodeView: View {
             } else {
                 VStack(spacing: 8) {
                     Image(systemName: "qrcode")
-                        .font(.system(size: 36))
+                        .font(.largeTitle)
                     Text("Cod QR indisponibil")
                         .font(.caption.weight(.semibold))
                     Text("Imaginea oficială a biletului nu a putut fi încărcată.")
@@ -31,10 +31,13 @@ public struct QRCodeView: View {
         }
         .frame(maxWidth: 280)
         .aspectRatio(1, contentMode: .fit)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Cod QR de control")
+        .accessibilityAddTraits(.isImage)
         .padding(14)
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .shadow(color: Color.black.opacity(0.18), radius: 12, x: 0, y: 4)
+        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color.black.opacity(0.08), lineWidth: 0.5))
         #else
         Image(systemName: "qrcode")
             .frame(width: 190, height: 190)
