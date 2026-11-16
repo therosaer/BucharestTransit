@@ -30,7 +30,7 @@ public struct TicketsView: View {
                     unauthenticatedLoginView
                 }
             }
-            .navigationTitle("Elevi și studenți")
+            .navigationTitle("Bilete")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 if appState.biletStatus.authenticated {
@@ -53,10 +53,10 @@ public struct TicketsView: View {
             }
         } label: {
             Text(appState.biletStatus.account?.initials ?? "AI")
-                .font(.system(.footnote, design: .rounded, weight: .bold))
-                .foregroundStyle(.white)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.primary)
                 .frame(width: 32, height: 32)
-                .background(Color.appleBlue, in: Circle())
+                .background(Color(uiColor: .tertiarySystemGroupedBackground), in: Circle())
         }
         .accessibilityLabel("Cont")
     }
@@ -133,7 +133,7 @@ public struct TicketsView: View {
     private var activeTicketsTab: some View {
         VStack(spacing: 14) {
             if appState.biletTicketsLoading && appState.biletActiveTickets.isEmpty {
-                ProgressView("Se încarcă titlurile...")
+                ProgressView("Se încarcă titlurile")
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 40)
             } else if let error = appState.biletTicketsError {
@@ -151,7 +151,7 @@ public struct TicketsView: View {
                 ContentUnavailableView {
                     Label("Niciun titlu activ", systemImage: "ticket")
                 } description: {
-                    Text("Aici apar titlurile anuale pentru elevi și studenți deja înregistrate în YouthTB.")
+                    Text("Titlurile anuale din YouthTB apar aici.")
                 }
             } else {
                 ForEach(appState.biletActiveTickets) { ticket in
@@ -162,51 +162,43 @@ public struct TicketsView: View {
     }
 
     private func ticketCard(_ ticket: Ticket) -> some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 20) {
             // QR first: it is the only thing an inspector needs.
-            VStack(spacing: 10) {
+            VStack(spacing: 12) {
                 QRCodeView(base64Image: ticket.qrBase64Payload)
 
                 if let series = ticket.seriesCode {
-                    Text("Seria: \(series)")
-                        .font(.system(.caption, design: .monospaced, weight: .semibold))
+                    Text("Seria \(series)")
+                        .font(.system(.footnote, design: .monospaced))
                         .foregroundStyle(.secondary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
-                        .background(Color.secondary.opacity(0.12), in: Capsule())
                 }
             }
             .frame(maxWidth: .infinity)
 
             VStack(alignment: .leading, spacing: 12) {
-                HStack(alignment: .firstTextBaseline) {
-                    VStack(alignment: .leading, spacing: 3) {
-                        Label("Activ", systemImage: "checkmark.seal.fill")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(Color.appleGreenText)
-                        Text(ticket.title)
-                            .font(.title3.weight(.bold))
-                        Text("Titlu înregistrat în YouthTB")
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 6) {
+                        Circle().fill(Color.appleGreen).frame(width: 6, height: 6)
+                        Text("Activ")
                             .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                    if ticket.isStudentElev {
-                        Text("Elev / Student")
-                            .font(.caption.weight(.semibold))
                             .foregroundStyle(Color.appleGreenText)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color.appleGreen.opacity(0.15), in: Capsule())
+                        if ticket.isStudentElev {
+                            Text("· Elev / Student")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
                     }
+                    Text(ticket.title)
+                        .font(.title3.weight(.semibold))
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 Divider()
 
                 remainingRow(ticket)
 
                 if ticket.validFromDate != nil || ticket.validToDate != nil {
-                    VStack(spacing: 6) {
+                    VStack(spacing: 8) {
                         if let from = displayDate(ticket.validFromDate) {
                             LabeledContent("Valabil de la", value: from)
                         }
@@ -215,12 +207,14 @@ public struct TicketsView: View {
                         }
                     }
                     .font(.footnote)
+                    .monospacedDigit()
                 }
             }
         }
-        .padding(18)
-        .groupedCardBackground(cornerRadius: 22)
+        .padding(20)
+        .groupedCardBackground(cornerRadius: 20)
         .accessibilityElement(children: .contain)
+        .accessibilityLabel(ticket.title)
     }
 
     @ViewBuilder
@@ -230,7 +224,7 @@ public struct TicketsView: View {
         if let endDate {
             let seconds = Int(endDate.timeIntervalSinceNow)
             HStack {
-                Label("Timp rămas", systemImage: "hourglass")
+                Text("Timp rămas")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Spacer()
@@ -243,57 +237,51 @@ public struct TicketsView: View {
                         Text(TransitTimeFormatter.formatRemaining(seconds: seconds))
                     }
                 }
-                .font(.system(.headline, design: .rounded, weight: .bold))
+                .font(.headline.weight(.semibold))
                 .monospacedDigit()
                 .foregroundStyle(seconds < 600 ? Color.appleRed : Color.appleGreenText)
             }
+            .accessibilityElement(children: .combine)
         }
     }
 
     private var unauthenticatedLoginView: some View {
-        Form {
-            Section {
-                VStack(spacing: 8) {
-                    Image(systemName: "ticket.fill")
-                        .font(.system(size: 48))
-                        .foregroundStyle(Color.appleBlue)
-                        .accessibilityHidden(true)
-                    Text("Titluri pentru elevi și studenți")
-                        .font(.system(.title3, design: .rounded, weight: .heavy))
-                        .multilineTextAlignment(.center)
-                    Text("Autentifică-te pentru a vedea titlurile anuale deja înregistrate în YouthTB și codul QR pentru control. Nu se pot cumpăra titluri din această secțiune.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                Text("Autentifică-te cu contul YouthTB pentru titlul anual și codul QR de control. Biletele nu se cumpără din aplicație.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                VStack(spacing: 12) {
+                    TextField("Email sau telefon", text: $usernameInput)
+                        .textContentType(.username)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .submitLabel(.next)
+                        .focused($focusedField, equals: .username)
+                        .onSubmit { focusedField = .password }
+                        .padding(.horizontal, 16)
+                        .frame(height: 52)
+                        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+                    SecureField("Parolă", text: $passwordInput)
+                        .textContentType(.password)
+                        .submitLabel(.go)
+                        .focused($focusedField, equals: .password)
+                        .onSubmit { submitLogin() }
+                        .padding(.horizontal, 16)
+                        .frame(height: 52)
+                        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+                    if let message = appState.biletLoginError ?? loginError {
+                        Text(message)
+                            .font(.footnote)
+                            .foregroundStyle(Color.appleRed)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
-                .listRowBackground(Color.clear)
-            }
 
-            Section {
-                TextField("Email sau număr de telefon", text: $usernameInput)
-                    .textContentType(.username)
-                    .keyboardType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .submitLabel(.next)
-                    .focused($focusedField, equals: .username)
-                    .onSubmit { focusedField = .password }
-
-                SecureField("Parolă", text: $passwordInput)
-                    .textContentType(.password)
-                    .submitLabel(.go)
-                    .focused($focusedField, equals: .password)
-                    .onSubmit { submitLogin() }
-            } footer: {
-                if let message = appState.biletLoginError ?? loginError {
-                    Text(message)
-                        .foregroundStyle(Color.appleRed)
-                }
-            }
-
-            Section {
                 Button(action: submitLogin) {
                     Group {
                         if isLoggingIn {
@@ -307,10 +295,11 @@ public struct TicketsView: View {
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .disabled(!canSubmit)
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
             }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
         }
+        .background(Color.appBackground)
         .scrollDismissesKeyboard(.interactively)
         .sensoryFeedback(.error, trigger: loginError) { _, new in new != nil }
     }

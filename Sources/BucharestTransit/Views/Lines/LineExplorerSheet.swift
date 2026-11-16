@@ -10,16 +10,11 @@ public struct LineExplorerSheet: View {
         VStack(spacing: 14) {
             // Header
             HStack(spacing: 12) {
-                Text(line)
-                    .font(.system(.title3, design: .rounded, weight: .heavy))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 6)
-                    .background(Color(hex: appState.activeLineData?.color ?? "#007AFF"), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                LinePlate(line: line, color: Color(hex: appState.activeLineData?.color ?? "#007AFF"))
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Linia \(line) • \(appState.activeLineData?.typeName ?? "Tranzit")")
-                        .font(.system(.callout, weight: .bold))
+                    Text(appState.activeLineData?.typeName ?? "Tranzit")
+                        .font(.headline)
 
                     if let tur = appState.activeLineData?.turTerminal, let retur = appState.activeLineData?.returTerminal {
                         Text("Tur: → \(tur)\nRetur: → \(retur)")
@@ -36,14 +31,18 @@ public struct LineExplorerSheet: View {
                     appState.clearLineSelection()
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 24))
+                        .font(.title2)
                         .foregroundColor(.secondary.opacity(0.8))
+                        .frame(minWidth: 44, minHeight: 44)
                 }
+                .accessibilityLabel("Închide")
             }
             .padding(.horizontal, 18)
-            .padding(.top, 14)
+            .padding(.top, isCompact ? 6 : 14)
 
             if !isCompact {
+                ScrollView {
+                VStack(alignment: .leading, spacing: 14) {
                 if line.uppercased().hasPrefix("M") {
                     VStack(alignment: .leading, spacing: 4) {
                         Label(
@@ -108,7 +107,7 @@ public struct LineExplorerSheet: View {
                     HapticFeedback.trigger(.light)
                     appState.filterOnRouteOnly = true
                 }) {
-                    Text("📍 Pe Traseu (\(onRouteCount))")
+                    Text("Pe traseu (\(onRouteCount))")
                         .font(.system(.caption, weight: .semibold))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
@@ -121,7 +120,7 @@ public struct LineExplorerSheet: View {
                     HapticFeedback.trigger(.light)
                     appState.filterOnRouteOnly = false
                 }) {
-                    Text("Toate Alocate (\(totalCount))")
+                    Text("Toate alocate (\(totalCount))")
                         .font(.system(.caption, weight: .semibold))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
@@ -137,10 +136,9 @@ public struct LineExplorerSheet: View {
                 // Assigned Vehicles Horizontal Strip
                 if !lineVehicles.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
-                    Text("Vehicule pe Linie")
-                        .font(.system(.caption, weight: .bold))
+                    Text("Vehicule pe linie")
+                        .font(.footnote)
                         .foregroundColor(.secondary)
-                        .textCase(.uppercase)
                         .padding(.horizontal, 18)
 
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -187,16 +185,15 @@ public struct LineExplorerSheet: View {
                 if let stations = activeStations, !stations.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
                     Text("Stații (\(stations.count))")
-                        .font(.system(.caption, weight: .bold))
+                        .font(.footnote)
                         .foregroundColor(.secondary)
-                        .textCase(.uppercase)
                         .padding(.horizontal, 18)
 
-                    List(stations.indices, id: \.self) { idx in
+                    ForEach(stations.indices, id: \.self) { idx in
                         let st = stations[idx]
                         VStack(alignment: .leading, spacing: 6) {
                             Button(action: {
-                                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                                withAnimation(.smooth(duration: 0.25)) {
                                     if expandedStationId == st.id {
                                         expandedStationId = nil
                                     } else {
@@ -223,7 +220,7 @@ public struct LineExplorerSheet: View {
                                             Image(systemName: "clock.fill")
                                                 .font(.caption2)
                                             Text(eta)
-                                                .font(.system(.caption2, design: .rounded, weight: .bold))
+                                                .font(.system(.caption2, weight: .semibold)).monospacedDigit()
                                         }
                                         .foregroundColor(eta.contains("În stație") ? .appleGreen : .appleBlue)
                                         .padding(.horizontal, 7)
@@ -272,14 +269,16 @@ public struct LineExplorerSheet: View {
                                 .transition(.opacity.combined(with: .move(edge: .top)))
                             }
                         }
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets(top: 6, leading: 18, bottom: 6, trailing: 18))
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 8)
+                        .frame(minHeight: 44, alignment: .leading)
                     }
-                    .listStyle(.plain)
                     }
                 }
-
-                Spacer()
+                }
+                .padding(.bottom, 24)
+                }
+                .scrollIndicators(.hidden)
             }
         }
     }

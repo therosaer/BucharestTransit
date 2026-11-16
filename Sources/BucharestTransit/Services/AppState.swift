@@ -6,7 +6,6 @@ public enum AppTab: String, CaseIterable, Identifiable {
     case map
     case lines
     case tickets
-    case stats
 
     public var id: String { rawValue }
 
@@ -14,8 +13,7 @@ public enum AppTab: String, CaseIterable, Identifiable {
         switch self {
         case .map: return "Hartă"
         case .lines: return "Linii"
-        case .tickets: return "Elevi/Stud."
-        case .stats: return "Statistici"
+        case .tickets: return "Bilete"
         }
     }
 
@@ -24,7 +22,6 @@ public enum AppTab: String, CaseIterable, Identifiable {
         case .map: return "map.fill"
         case .lines: return "point.topleft.down.to.point.bottomright.curvepath.fill"
         case .tickets: return "ticket.fill"
-        case .stats: return "chart.bar.xaxis"
         }
     }
 }
@@ -43,6 +40,13 @@ public final class AppState: ObservableObject {
 
     // Tab Bar
     @Published public var selectedTab: AppTab = .map
+    @Published public var favoriteLines: Set<String> = Set(UserDefaults.standard.stringArray(forKey: "favorite_lines") ?? []) {
+        didSet { UserDefaults.standard.set(Array(favoriteLines).sorted(), forKey: "favorite_lines") }
+    }
+
+    public func toggleFavorite(_ line: String) {
+        if favoriteLines.contains(line) { favoriteLines.remove(line) } else { favoriteLines.insert(line) }
+    }
 
     // Transit Data
     @Published public var vehicles: [Vehicle] = []

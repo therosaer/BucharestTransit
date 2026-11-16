@@ -9,7 +9,7 @@ public struct VehicleInspectorSheet: View {
             // Header
             HStack(spacing: 14) {
                 Text(vehicle.line)
-                    .font(.system(.title2, design: .rounded, weight: .heavy))
+                    .font(.system(.title2, weight: .semibold))
                     .foregroundColor(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
@@ -31,9 +31,11 @@ public struct VehicleInspectorSheet: View {
                     appState.dismissVehicleInspector()
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 24))
+                        .font(.title2)
                         .foregroundColor(.secondary.opacity(0.8))
+                        .frame(minWidth: 44, minHeight: 44)
                 }
+                .accessibilityLabel("Închide")
             }
             .padding(.horizontal, 20)
             .padding(.top, 16)

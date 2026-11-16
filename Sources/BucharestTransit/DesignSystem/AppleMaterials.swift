@@ -225,3 +225,94 @@ public enum TransitTimeFormatter {
         return "\(hStr):\(mStr):\(sStr)"
     }
 }
+
+/// Round icon button. System glass button style on iOS 26+, material circle below.
+public struct CircleGlassButton: View {
+    let systemImage: String
+    let label: String
+    var tint: Color = .primary
+    let action: () -> Void
+
+    public init(systemImage: String, label: String, tint: Color = .primary, action: @escaping () -> Void) {
+        self.systemImage = systemImage
+        self.label = label
+        self.tint = tint
+        self.action = action
+    }
+
+    public var body: some View {
+        Button {
+            HapticFeedback.trigger(.light)
+            action()
+        } label: {
+            Image(systemName: systemImage)
+                .font(.title3.weight(.medium))
+                .foregroundStyle(tint)
+                .frame(width: 52, height: 52)
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .nativeGlass(in: Circle())
+        .accessibilityLabel(label)
+    }
+}
+
+public extension Color {
+    /// This color, darkened only as much as needed so white text on it reaches 4.5:1 contrast.
+    var darkenedForWhiteText: Color {
+        #if canImport(UIKit)
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        UIColor(self).getRed(&r, green: &g, blue: &b, alpha: &a)
+        func lin(_ c: CGFloat) -> Double {
+            let v = Double(c)
+            return v <= 0.03928 ? v / 12.92 : pow((v + 0.055) / 1.055, 2.4)
+        }
+        var k: CGFloat = 1
+        while k > 0.3 {
+            let l = 0.2126 * lin(r * k) + 0.7152 * lin(g * k) + 0.0722 * lin(b * k)
+            if 1.05 / (l + 0.05) >= 4.5 { break }
+            k -= 0.03
+        }
+        return Color(red: Double(r * k), green: Double(g * k), blue: Double(b * k))
+        #else
+        return self
+        #endif
+    }
+}
+
+/// The app's signature: a line number on a flat rounded plate, like a stop sign.
+public struct LinePlate: View {
+    let line: String
+    let color: Color
+    var height: CGFloat = 32
+
+    public init(line: String, color: Color, height: CGFloat = 32) {
+        self.line = line
+        self.color = color
+        self.height = height
+    }
+
+    public var body: some View {
+        Text(line)
+            .font(.system(.body, weight: .semibold))
+            .monospacedDigit()
+            .foregroundStyle(.white)
+            .minimumScaleFactor(0.7)
+            .lineLimit(1)
+            .frame(minWidth: height * 1.5, minHeight: height)
+            .padding(.horizontal, 4)
+            .background(color.darkenedForWhiteText, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .accessibilityLabel("Linia \(line)")
+    }
+}
+
+#Preview("Line plates") {
+    VStack(alignment: .leading, spacing: 12) {
+        LinePlate(line: "41", color: Color(hex: "#FF3B30"))
+        LinePlate(line: "104", color: Color(hex: "#007AFF"))
+        LinePlate(line: "66", color: Color(hex: "#34C759"))
+        LinePlate(line: "M2", color: Color(hex: "#FF9500"))
+    }
+    .padding()
+    .dynamicTypeSize(.accessibility3)
+}

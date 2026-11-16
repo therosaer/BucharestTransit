@@ -11,10 +11,10 @@ public struct SearchCapsuleView: View {
                     .foregroundColor(.secondary)
                     .font(.body.weight(.semibold))
 
-                TextField("Caută linie (41, 104, 381) sau vehicul...", text: $appState.searchQuery)
+                TextField("Caută linie", text: $appState.searchQuery)
                     .focused($isSearchFocused)
                     .autocorrectionDisabled()
-                    .textInputAutocapitalization(.characters)
+                    .textInputAutocapitalization(.never)
                     .submitLabel(.search)
                     .font(.body)
                     .onSubmit {
@@ -40,7 +40,9 @@ public struct SearchCapsuleView: View {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(.secondary)
                             .font(.body)
+                            .frame(minWidth: 44, minHeight: 44)
                     }
+                    .accessibilityLabel("Șterge căutarea")
                 }
 
                 // Quick Ticket Countdown Pill lives in TicketCountdownPill (shown when search is closed)
@@ -64,20 +66,15 @@ public struct SearchCapsuleView: View {
                                 appState.selectLine(route.line)
                             }) {
                                 HStack(spacing: 12) {
-                                    Text(route.line)
-                                        .font(.subheadline.weight(.bold))
-                                        .foregroundColor(.white)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(Color(hex: route.hexColor), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                                    LinePlate(line: route.line, color: Color(hex: route.hexColor), height: 28)
 
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text("Linia \(route.line) • \(route.typeName ?? "Tranzit")")
-                                            .font(.subheadline.weight(.semibold))
+                                        Text(route.typeName ?? "Tranzit")
+                                            .font(.subheadline)
                                             .foregroundColor(.primary)
 
                                         if let terminals = route.terminals, !terminals.isEmpty {
-                                            Text(terminals.joined(separator: " ⇄ "))
+                                            Text(terminals.joined(separator: " – "))
                                                 .font(.caption)
                                                 .foregroundColor(.secondary)
                                                 .lineLimit(1)
@@ -86,9 +83,10 @@ public struct SearchCapsuleView: View {
 
                                     Spacer()
 
-                                    Text("\(route.activeVehicles) active")
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundColor(.appleBlue)
+                                    Text("\(route.activeVehicles) în circulație")
+                                        .font(.caption)
+                                        .monospacedDigit()
+                                        .foregroundColor(.secondary)
                                 }
                                 .padding(.horizontal, 14)
                                 .padding(.vertical, 9)
@@ -152,9 +150,9 @@ public struct TicketCountdownPill: View {
                     Image(systemName: "ticket.fill")
                         .font(.caption)
                     Text(TransitTimeFormatter.formatRemaining(seconds: remaining))
-                        .font(.caption.weight(.bold))
+                        .font(.caption.weight(.semibold))
                         .monospacedDigit()
-                        .foregroundColor(.appleGreen)
+                        .foregroundColor(.appleGreenText)
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
