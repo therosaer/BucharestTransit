@@ -2,17 +2,7 @@
 
 ## 1.4
 
-Apple Maps replaces the OpenStreetMap / Leaflet web map. Built on top of the native-feel pass below.
-
-### Map (Apple Maps, `MKMapView`)
-- Native Apple Maps with the muted basemap and no points of interest, so vehicles stand out. Follows light and dark mode. Satellite uses the hybrid style.
-- Vehicles are flat line plates drawn as cached images, sized to the number, with a crowding ring and faded state for stale data. Positions glide between refreshes.
-- Stops use native clustering and load for the whole visible area, not only when zoomed in.
-- Selected lines draw the route with colored direction arrows along it. Station dots open the stop sheet.
-- Locate button asks for a single location fix.
-- Removed the Leaflet web view and its bundled assets from the map path. The Relief, Light and Dark tile styles now fall back to the standard map.
-
-## Native feel pass (included in 1.4)
+Native feel pass on the existing Leaflet map. The Apple Maps version lives on the `v1.4-apple-maps` branch.
 
 ### Navigation
 - Floating liquid glass tab selector with a sliding glass indicator. Tabs: Hartă, Linii, Bilete.
