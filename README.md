@@ -4,21 +4,27 @@
 
 ## English
 
+> **Version 1.4 · Apple Maps edition (this branch, `v1.4-apple-maps`).** The map is native Apple Maps (`MKMapView`). The Leaflet / OpenStreetMap edition of 1.4 is on [`master`](https://github.com/therosaer/BucharestTransit/tree/master).
+
 BucharestTransit is a Romanian-language iOS app for exploring public transport in Bucharest and Ilfov. It brings live vehicle positions, route information, bundled timetables, and map layers together in a native SwiftUI app.
 
 > This is an independent project and is not affiliated with or endorsed by STB, TPBI, Metrorex, Bilet TB, or the map-data providers. Live information and timetables may be incomplete, delayed, or unavailable; check official sources when making travel decisions.
 
 ### Features
 
-- **Live vehicle map** with route filters, vehicle details, and multiple map styles.
-- **Route directory and route details** for buses, trolleybuses, trams, and metro.
+- **Live vehicle map on Apple Maps** with a muted basemap, route filters, vehicle details, and Standard and Satellite styles that follow light and dark mode. Vehicles are compact line plates with a crowding ring, and positions glide between refreshes.
+- **Native stop clustering and route arrows.** Stops cluster the way Apple Maps does and load for the whole visible area, and a selected line shows colored direction arrows along its route.
+- **Floating liquid glass tab selector** with three tabs: Map, Lines, and Tickets (Bilete). Drag across it or tap a tab.
+- **Route directory and route details** for buses, trolleybuses, trams, and metro, with a flat line plate per route, route terminals, live vehicle counts, and **favorite lines** (swipe or long-press a line).
+- **Scrollable line sheet** with direction filter, vehicles on the line, and every stop with its next arrival.
 - **Stop information and scheduled departures** based on bundled TPBI GTFS-derived data.
-- **Map layers** for transit infrastructure and stops.
+- **Stops mode** to browse stops instead of vehicles.
 - **Vehicle-following Live Activity** on supported iOS versions.
 - **YouthTB account view** for existing annual student or pupil travel titles and their QR codes. The app does not sell or activate tickets.
+- **Accessibility and native feel.** Dynamic Type, VoiceOver labels and selected traits, 44 pt touch targets, Reduce Motion support, and white line plates whose backgrounds are darkened only as far as needed for 4.5:1 contrast.
 - **Local startup data**, allowing the map to show a bundled vehicle snapshot when live data is unavailable.
 
-The interface is currently available in Romanian. Live vehicle data and ticket-account features require an internet connection; map tiles are provided by external services.
+The interface is currently available in Romanian. Live vehicle data and ticket-account features require an internet connection; the map is provided by Apple Maps.
 
 ### Screenshots
 
@@ -42,9 +48,11 @@ The interface is currently available in Romanian. Live vehicle data and ticket-a
 From the repository root:
 
 ```sh
-xtool dev build
-xtool dev run --usb
+xtool dev build -c release
+xtool dev run --usb -c release
 ```
+
+Use `-c release`: the default debug build is much slower and makes the phone run hot.
 
 List devices recognized by xtool:
 
@@ -52,16 +60,15 @@ List devices recognized by xtool:
 xtool devices
 ```
 
-`xtool.yml` contains the bundle identifier used for the build. Replace the example identifier with one you control before signing or distributing the app. Building directly with `swift build` on Linux is not supported because the Linux Swift toolchain does not include Apple UI frameworks such as SwiftUI and WebKit.
+`xtool.yml` contains the bundle identifier used for the build. Replace the example identifier with one you control before signing or distributing the app. Building directly with `swift build` on Linux is not supported because the Linux Swift toolchain does not include Apple UI frameworks such as SwiftUI and MapKit.
 
 ### Data, privacy, and attribution
 
 - Scheduled departures and route geometry are bundled with the app and derived from public transit data. Their accuracy depends on the source and update cycle.
 - Live vehicle information is fetched directly from the mo-bi.ro public feed. The app uses bundled data when the live feed is unavailable.
-- Location access is requested when the user asks to show their position. Coordinates are used for the map and nearby-stop context; the selected map provider receives tile requests for the visible area.
+- Location access is requested when the user asks to show their position. Coordinates are used to center the map; Apple Maps handles the map and location display under Apple's own terms.
 - The ticket view connects to STB's ticketing service when a user signs in to view existing YouthTB titles. Session tokens are stored in the iOS Keychain; a cached account summary is stored in app preferences. Review STB's applicable terms and privacy practices before signing in.
-- Map data and styles are attributed in the app to their providers, including OpenStreetMap contributors, CARTO, and OpenTopoMap.
-- Leaflet is bundled for the map interface; see its [license](https://github.com/Leaflet/Leaflet/blob/main/LICENSE).
+- Map data is provided by Apple Maps. This edition no longer uses OpenStreetMap tiles or Leaflet in the app's map; Leaflet files may still remain in `Resources/` for now.
 
 The MIT license in this repository applies to the project's own code. Bundled datasets, third-party libraries, and externally served map data may have separate terms; review them and preserve required notices before redistribution.
 
@@ -83,21 +90,27 @@ Issues and pull requests are welcome. Include the affected iOS version and repro
 
 ## Romanian
 
+> **Versiunea 1.4 · ediția Apple Maps (această ramură, `v1.4-apple-maps`).** Harta este Apple Maps nativ (`MKMapView`). Ediția 1.4 cu Leaflet / OpenStreetMap se află pe [`master`](https://github.com/therosaer/BucharestTransit/tree/master).
+
 Aplicație iOS în limba română pentru explorarea transportului public din București și Ilfov. Reunește pozițiile live ale vehiculelor, informațiile despre linii, orarele incluse în aplicație și straturile hărții într-o aplicație nativă SwiftUI.
 
 > Acesta este un proiect independent, neafiliat și neavizat de STB, TPBI, Metrorex, Bilet TB sau furnizorii de hărți. Informațiile live și orarele pot fi incomplete, întârziate sau indisponibile; verifică sursele oficiale înainte de a lua decizii privind călătoria.
 
 ## Funcționalități
 
-- **Hartă cu vehicule live**, filtre pentru linii, detalii despre vehicule și mai multe stiluri de hartă.
-- **Catalog de linii și detalii despre trasee** pentru autobuze, troleibuze, tramvaie și metrou.
+- **Hartă cu vehicule live pe Apple Maps**, cu hartă de bază estompată, filtre pentru linii, detalii despre vehicule și stilurile Standard și Satelit, care urmează modul luminos sau întunecat. Vehiculele sunt plăcuțe de linie compacte, cu inel pentru aglomerare, iar pozițiile se mută lin între actualizări.
+- **Grupare nativă a stațiilor și săgeți pe traseu.** Stațiile se grupează ca în Apple Maps și se încarcă pentru toată zona vizibilă, iar linia selectată afișează săgeți colorate de direcție pe traseu.
+- **Selector de file din sticlă lichidă**, plutitor, cu trei file: Hartă, Linii și Bilete. Îl poți trage sau atinge o filă.
+- **Catalog de linii și detalii despre trasee** pentru autobuze, troleibuze, tramvaie și metrou, cu plăcuță de linie, capete de traseu, numărul de vehicule live și **linii favorite** (glisează sau ține apăsat pe o linie).
+- **Foaie de linie derulabilă**, cu filtru de direcție, vehiculele de pe linie și fiecare stație cu următoarea sosire.
 - **Informații despre stații și plecări programate** pe baza datelor GTFS TPBI incluse în aplicație.
-- **Straturi de hartă** pentru infrastructura și stațiile de transport.
+- **Mod stații**, pentru a răsfoi stațiile în loc de vehicule.
 - **Live Activity pentru urmărirea unui vehicul**, pe versiunile de iOS compatibile.
 - **Vizualizarea contului YouthTB** pentru titlurile anuale existente pentru elevi sau studenți și codurile lor QR. Aplicația nu vinde și nu activează titluri de călătorie.
+- **Accesibilitate și aspect nativ.** Dynamic Type, etichete VoiceOver, zone de atingere de 44 pt, suport pentru Reduce Motion și plăcuțe de linie cu text alb, al căror fundal este închis doar cât e nevoie pentru contrast de 4,5:1.
 - **Date locale la pornire**, astfel încât harta poate afișa o copie inclusă a vehiculelor când datele live nu sunt disponibile.
 
-Interfața este momentan disponibilă în limba română. Datele live despre vehicule și funcțiile contului de bilete necesită conexiune la internet; dalele hărții sunt furnizate de servicii externe.
+Interfața este momentan disponibilă în limba română. Datele live despre vehicule și funcțiile contului de bilete necesită conexiune la internet; harta este furnizată de Apple Maps.
 
 ## Capturi de ecran
 
@@ -115,9 +128,11 @@ Vezi capturile de ecran de mai sus: harta vehiculelor live, catalogul de linii, 
 Din directorul principal al depozitului:
 
 ```sh
-xtool dev build
-xtool dev run --usb
+xtool dev build -c release
+xtool dev run --usb -c release
 ```
+
+Folosește `-c release`: construirea implicită de depanare este mult mai lentă și încălzește telefonul.
 
 Pentru a afișa dispozitivele recunoscute de xtool:
 
@@ -125,16 +140,15 @@ Pentru a afișa dispozitivele recunoscute de xtool:
 xtool devices
 ```
 
-Fișierul `xtool.yml` conține identificatorul de pachet folosit la construire. Înlocuiește identificatorul exemplu cu unul pe care îl deții înainte de semnarea sau distribuirea aplicației. Construirea directă cu `swift build` pe Linux nu este acceptată, deoarece toolchain-ul Swift pentru Linux nu include framework-uri Apple precum SwiftUI și WebKit.
+Fișierul `xtool.yml` conține identificatorul de pachet folosit la construire. Înlocuiește identificatorul exemplu cu unul pe care îl deții înainte de semnarea sau distribuirea aplicației. Construirea directă cu `swift build` pe Linux nu este acceptată, deoarece toolchain-ul Swift pentru Linux nu include framework-uri Apple precum SwiftUI și MapKit.
 
 ## Date, confidențialitate și atribuiri
 
 - Orarele de plecare și geometria traseelor sunt incluse în aplicație și provin din date publice de transport. Acuratețea lor depinde de sursa de date și de frecvența actualizării.
 - Informațiile live despre vehicule sunt preluate direct din fluxul public mo-bi.ro. Dacă datele live nu sunt disponibile, aplicația folosește datele locale incluse.
-- Accesul la locație este solicitat când utilizatorul cere afișarea poziției sale. Coordonatele sunt folosite pentru hartă și contextul stațiilor din apropiere; furnizorul selectat al hărții primește cereri pentru dalele zonei afișate.
+- Accesul la locație este solicitat când utilizatorul cere afișarea poziției sale. Coordonatele sunt folosite pentru hartă și contextul stațiilor din apropiere; harta și afișarea locației sunt gestionate de Apple Maps, conform termenilor Apple.
 - Secțiunea de bilete se conectează la serviciul STB când utilizatorul se autentifică pentru a vedea titlurile YouthTB existente. Tokenurile sesiunii sunt păstrate în Keychain-ul iOS; un rezumat al contului este păstrat în preferințele aplicației. Consultă termenii și practicile de confidențialitate STB înainte de autentificare.
-- Datele hărții și stilurile acesteia sunt atribuite în interfață furnizorilor respectivi, inclusiv contributorilor OpenStreetMap, CARTO și OpenTopoMap.
-- Leaflet este inclus pentru interfața hărții; consultă [licența](https://github.com/Leaflet/Leaflet/blob/main/LICENSE).
+- Datele hărții sunt furnizate de Apple Maps. Această ediție nu mai folosește dale OpenStreetMap sau Leaflet în hartă; fișierele Leaflet pot rămâne deocamdată în `Resources/`.
 
 Licența MIT din acest depozit se aplică propriului cod al proiectului. Seturile de date incluse, bibliotecile terțe și datele hărților furnizate din exterior pot avea termeni separați; verifică acești termeni și păstrează atribuțiile necesare înainte de redistribuire.
 
