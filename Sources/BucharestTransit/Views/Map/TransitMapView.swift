@@ -14,7 +14,7 @@ public struct TransitMapView: View {
     public var body: some View {
         ZStack(alignment: .top) {
             // MARK: - OpenStreetMap / CartoDB Interactive Map
-            OpenStreetMapView(
+            AppleMapView(
                 appState: appState,
                 vehicles: filteredVehicles,
                 selectedLine: appState.selectedLine,
@@ -28,8 +28,6 @@ public struct TransitMapView: View {
                 }
             )
             .ignoresSafeArea()
-            .accessibilityLabel("Hartă cu vehiculele în timp real")
-            .accessibilityHint("Caută o linie sau deschide Linii pentru a vedea vehiculele într-o listă")
             .zIndex(0)
 
             // MARK: - Top Floating UI (Search, toggled from the dock)
