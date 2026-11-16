@@ -4,21 +4,26 @@
 
 ## English
 
+> **Version 1.4 · Leaflet edition (this branch, `master`).** The map is OpenStreetMap-based and runs in a bundled Leaflet web view. An Apple Maps edition of 1.4 lives on the [`v1.4-apple-maps`](https://github.com/therosaer/BucharestTransit/tree/v1.4-apple-maps) branch.
+
 BucharestTransit is a Romanian-language iOS app for exploring public transport in Bucharest and Ilfov. It brings live vehicle positions, route information, bundled timetables, and map layers together in a native SwiftUI app.
 
 > This is an independent project and is not affiliated with or endorsed by STB, TPBI, Metrorex, Bilet TB, or the map-data providers. Live information and timetables may be incomplete, delayed, or unavailable; check official sources when making travel decisions.
 
 ### Features
 
-- **Live vehicle map** with route filters, vehicle details, and multiple map styles.
-- **Route directory and route details** for buses, trolleybuses, trams, and metro.
+- **Live vehicle map** (OpenStreetMap / Leaflet) with route filters, vehicle details, and multiple map styles: Default, Satellite, Relief, Light, and Dark.
+- **Floating liquid glass tab selector** with three tabs: Map, Lines, and Tickets (Bilete). Drag across it or tap a tab.
+- **Route directory and route details** for buses, trolleybuses, trams, and metro, with a flat line plate per route, route terminals, live vehicle counts, and **favorite lines** (swipe or long-press a line).
+- **Scrollable line sheet** with direction filter, vehicles on the line, and every stop with its next arrival.
 - **Stop information and scheduled departures** based on bundled TPBI GTFS-derived data.
 - **Map layers** for transit infrastructure and stops.
 - **Vehicle-following Live Activity** on supported iOS versions.
 - **YouthTB account view** for existing annual student or pupil travel titles and their QR codes. The app does not sell or activate tickets.
+- **Accessibility and native feel.** Dynamic Type, VoiceOver labels and selected traits, 44 pt touch targets, Reduce Motion support, and white line plates whose backgrounds are darkened only as far as needed for 4.5:1 contrast.
 - **Local startup data**, allowing the map to show a bundled vehicle snapshot when live data is unavailable.
 
-The interface is currently available in Romanian. Live vehicle data and ticket-account features require an internet connection; map tiles are provided by external services.
+The interface is currently available in Romanian. Live vehicle data and ticket-account features require an internet connection; map tiles are provided by external services (OpenStreetMap-based).
 
 ### Screenshots
 
@@ -42,9 +47,11 @@ The interface is currently available in Romanian. Live vehicle data and ticket-a
 From the repository root:
 
 ```sh
-xtool dev build
-xtool dev run --usb
+xtool dev build -c release
+xtool dev run --usb -c release
 ```
+
+Use `-c release`: the default debug build is much slower and makes the phone run hot.
 
 List devices recognized by xtool:
 
@@ -83,18 +90,23 @@ Issues and pull requests are welcome. Include the affected iOS version and repro
 
 ## Romanian
 
+> **Versiunea 1.4 · ediția Leaflet (această ramură, `master`).** Harta se bazează pe OpenStreetMap și rulează într-un web view Leaflet inclus în aplicație. O ediție 1.4 cu Apple Maps se află pe ramura [`v1.4-apple-maps`](https://github.com/therosaer/BucharestTransit/tree/v1.4-apple-maps).
+
 Aplicație iOS în limba română pentru explorarea transportului public din București și Ilfov. Reunește pozițiile live ale vehiculelor, informațiile despre linii, orarele incluse în aplicație și straturile hărții într-o aplicație nativă SwiftUI.
 
 > Acesta este un proiect independent, neafiliat și neavizat de STB, TPBI, Metrorex, Bilet TB sau furnizorii de hărți. Informațiile live și orarele pot fi incomplete, întârziate sau indisponibile; verifică sursele oficiale înainte de a lua decizii privind călătoria.
 
 ## Funcționalități
 
-- **Hartă cu vehicule live**, filtre pentru linii, detalii despre vehicule și mai multe stiluri de hartă.
-- **Catalog de linii și detalii despre trasee** pentru autobuze, troleibuze, tramvaie și metrou.
+- **Hartă cu vehicule live** (OpenStreetMap / Leaflet), filtre pentru linii, detalii despre vehicule și stiluri de hartă: Implicită, Satelit, Relief, Deschisă și Întunecată.
+- **Selector de file din sticlă lichidă**, plutitor, cu trei file: Hartă, Linii și Bilete. Îl poți trage sau atinge o filă.
+- **Catalog de linii și detalii despre trasee** pentru autobuze, troleibuze, tramvaie și metrou, cu plăcuță de linie, capete de traseu, numărul de vehicule live și **linii favorite** (glisează sau ține apăsat pe o linie).
+- **Foaie de linie derulabilă**, cu filtru de direcție, vehiculele de pe linie și fiecare stație cu următoarea sosire.
 - **Informații despre stații și plecări programate** pe baza datelor GTFS TPBI incluse în aplicație.
 - **Straturi de hartă** pentru infrastructura și stațiile de transport.
 - **Live Activity pentru urmărirea unui vehicul**, pe versiunile de iOS compatibile.
 - **Vizualizarea contului YouthTB** pentru titlurile anuale existente pentru elevi sau studenți și codurile lor QR. Aplicația nu vinde și nu activează titluri de călătorie.
+- **Accesibilitate și aspect nativ.** Dynamic Type, etichete VoiceOver, zone de atingere de 44 pt, suport pentru Reduce Motion și plăcuțe de linie cu text alb, al căror fundal este închis doar cât e nevoie pentru contrast de 4,5:1.
 - **Date locale la pornire**, astfel încât harta poate afișa o copie inclusă a vehiculelor când datele live nu sunt disponibile.
 
 Interfața este momentan disponibilă în limba română. Datele live despre vehicule și funcțiile contului de bilete necesită conexiune la internet; dalele hărții sunt furnizate de servicii externe.
@@ -115,9 +127,11 @@ Vezi capturile de ecran de mai sus: harta vehiculelor live, catalogul de linii, 
 Din directorul principal al depozitului:
 
 ```sh
-xtool dev build
-xtool dev run --usb
+xtool dev build -c release
+xtool dev run --usb -c release
 ```
+
+Folosește `-c release`: construirea implicită de depanare este mult mai lentă și încălzește telefonul.
 
 Pentru a afișa dispozitivele recunoscute de xtool:
 
