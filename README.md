@@ -6,7 +6,7 @@
 
 > **Version 1.4 · Apple Maps edition (this branch, `v1.4-apple-maps`).** The map is native Apple Maps (`MKMapView`). The Leaflet / OpenStreetMap edition of 1.4 is on [`master`](https://github.com/therosaer/BucharestTransit/tree/master).
 
-BucharestTransit is a Romanian-language iOS app for exploring public transport in Bucharest and Ilfov. It brings live vehicle positions, route information, bundled timetables, and map layers together in a native SwiftUI app.
+BTranzit is a Romanian-language iOS app for exploring public transport in Bucharest and Ilfov. It brings live vehicle positions, route information, bundled timetables, and map layers together in a native SwiftUI app.
 
 > This is an independent project and is not affiliated with or endorsed by STB, TPBI, Metrorex, Bilet TB, or the map-data providers. Live information and timetables may be incomplete, delayed, or unavailable; check official sources when making travel decisions.
 
@@ -92,7 +92,7 @@ Issues and pull requests are welcome. Include the affected iOS version and repro
 
 > **Versiunea 1.4 · ediția Apple Maps (această ramură, `v1.4-apple-maps`).** Harta este Apple Maps nativ (`MKMapView`). Ediția 1.4 cu Leaflet / OpenStreetMap se află pe [`master`](https://github.com/therosaer/BucharestTransit/tree/master).
 
-Aplicație iOS în limba română pentru explorarea transportului public din București și Ilfov. Reunește pozițiile live ale vehiculelor, informațiile despre linii, orarele incluse în aplicație și straturile hărții într-o aplicație nativă SwiftUI.
+BTranzit este o aplicație iOS în limba română pentru explorarea transportului public din București și Ilfov. Reunește pozițiile live ale vehiculelor, informațiile despre linii, orarele incluse în aplicație și straturile hărții într-o aplicație nativă SwiftUI.
 
 > Acesta este un proiect independent, neafiliat și neavizat de STB, TPBI, Metrorex, Bilet TB sau furnizorii de hărți. Informațiile live și orarele pot fi incomplete, întârziate sau indisponibile; verifică sursele oficiale înainte de a lua decizii privind călătoria.
 
